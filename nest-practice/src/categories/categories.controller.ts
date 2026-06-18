@@ -1,4 +1,4 @@
-import { Controller, Param, Get, Post, Put, Delete, Body, ParseIntPipe, HttpStatus, HttpCode, } from '@nestjs/common';
+import { Controller, Param, Get, Post, Put, Delete, Body, ParseIntPipe, HttpStatus, HttpCode, ValidationPipe, } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { CategoriesService } from './categories.service';
 import { UpdateCategoryDto } from './dto/update-category.dto';
@@ -21,7 +21,7 @@ export class CategoriesController {
 
   // POST /categories
   @Post()
-  create(@Body() createCategoryDto: CreateCategoryDto) {
+  create(@Body(new ValidationPipe) createCategoryDto: CreateCategoryDto) {
     return this.categoriesService.create(createCategoryDto.name);
   }
 
@@ -29,7 +29,7 @@ export class CategoriesController {
   @Put(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateCategoryDto: UpdateCategoryDto,
+    @Body(new ValidationPipe) updateCategoryDto: UpdateCategoryDto,
   ) {
     return this.categoriesService.update(id, updateCategoryDto.name);
   }
