@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Product } from './entities/product.entity';
+import { CreateProductDto } from './dto/create-product.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 
 
@@ -44,19 +46,25 @@ export class ProductsService {
     return this.products.find(product => product.id === id);
   }
 
-  create(product: Omit<Product, 'id'>): Product {
-    const newProduct = { id: this.products.length + 1, ...product };
+  create(product: CreateProductDto): Product {
+    const newProduct: Product = {
+      id: this.products.length + 1,
+      ...product
+    };
     this.products.push(newProduct);
     return newProduct;
   }
 
-  update(id: number, updatedProduct: Partial<Product>): Product | null {
+  update(id: number, updatedProduct: UpdateProductDto): Product | null {
     const productIndex = this.products.findIndex(product => product.id === id);
 
     if (productIndex === -1)
       return null;
 
-    this.products[productIndex] = { ...this.products[productIndex], ...updatedProduct };
+    this.products[productIndex] = {
+      ...this.products[productIndex],
+      ...updatedProduct
+    };
     return this.products[productIndex];
   }
 
