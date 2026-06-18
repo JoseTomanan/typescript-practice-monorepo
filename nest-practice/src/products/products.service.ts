@@ -41,8 +41,18 @@ export class ProductsService {
   /**
    * For GET /products
    */
-  findAll(@Query() categoryId: number): Product[] {
-    return this.products.filter(product => product.categoryId === categoryId);
+  findAll(
+    @Query() categoryId: number,
+    @Query() page: number,
+    @Query() limit: number,
+  ): Product[] {
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    const filteredProducts = categoryId
+      ? this.products.filter(product => product.categoryId === categoryId)
+      : this.products;
+
+    return filteredProducts.slice(startIndex, endIndex);
   }
 
   /**
