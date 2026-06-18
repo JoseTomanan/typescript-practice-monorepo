@@ -12,4 +12,7 @@ export class UpdateProductDto {
   
   @IsInt()
   stock?: number;
+
+  @IsInt()
+  categoryId?: number;
 }
