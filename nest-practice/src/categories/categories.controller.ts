@@ -14,13 +14,13 @@ export class CategoriesController {
   // GET /categories
   @Get()
   findAll() {
-    return [{ id: '1' }, { id: '2' }];
+    return [{ id: 1, name: 'Category 1' }, { id: 2, name: 'Category 2' }];
   }
 
   // GET /categories/:id
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return { id };
+    return { id, name: 'Category 1' };
   }
 
   // POST /categories
