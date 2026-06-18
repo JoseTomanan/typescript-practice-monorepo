@@ -4,7 +4,9 @@ import {
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { ApiKeyGuard } from '../common/guards/api-key.guard';
+import { ApiKeyGuard } from '../app.guard';
+
+
 
 @Controller('products')
 export class ProductsController {
