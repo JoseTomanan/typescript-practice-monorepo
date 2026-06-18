@@ -4,8 +4,9 @@ import { Category } from './entities/category.entity';
 @Injectable()
 export class CategoriesService {
   private categories: Category[] = [
-    { id: 1, name: 'Category 1' },
-    { id: 2, name: 'Category 2' },
+    { id: 1, name: 'Smartphones' },
+    { id: 2, name: 'Refrigerators' },
+    { id: 3, name: 'Motorcycle Parts' },
   ];
 
   findAll(): Category[] {
@@ -23,22 +24,22 @@ export class CategoriesService {
   }
 
   update(id: number, name: string): Category | null {
-    const categoryIndex = this.categories.findIndex(category => category.id === id);
+    const categoryIdIndex = this.categories.findIndex(category => category.id === id);
 
-    if (categoryIndex === -1)
+    if (categoryIdIndex === -1)
       return null;
 
-    this.categories[categoryIndex].name = name;
-    return this.categories[categoryIndex];
+    this.categories[categoryIdIndex].name = name;
+    return this.categories[categoryIdIndex];
   }
 
   remove(id: number): Category | null {
-    const categoryIndex = this.categories.findIndex(category => category.id === id);
+    const categoryIdIndex = this.categories.findIndex(category => category.id === id);
 
-    if (categoryIndex === -1)
+    if (categoryIdIndex === -1)
       return null;
     
-    const removedCategory = this.categories.splice(categoryIndex, 1);
+    const removedCategory = this.categories.splice(categoryIdIndex, 1);
     return removedCategory[0];
   }
 }
