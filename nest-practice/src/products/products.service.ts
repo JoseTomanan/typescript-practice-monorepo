@@ -2,6 +2,7 @@ import { Injectable, NotFoundException, Query } from '@nestjs/common';
 import { Product } from './entities/product.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { PaginationQueryResult } from './dto/pagination-query.dto';
 
 
 
@@ -42,17 +43,34 @@ export class ProductsService {
    * For GET /products
    */
   findAll(
-    @Query() categoryId: number,
-    @Query() page: number,
-    @Query() limit: number,
-  ): Product[] {
+    categoryId?: number, page?: number, limit?: number
+  ): PaginationQueryResult<Product> {
+    if (!page || !limit)
+      return {
+        data: this.products,
+        meta: {
+          total: this.products.length,
+          page: 1,
+          limit: this.products.length,
+          totalPages: 1,
+        },
+      };
+
     const startIndex = (page - 1) * limit;
     const endIndex = startIndex + limit;
     const filteredProducts = categoryId
       ? this.products.filter(product => product.categoryId === categoryId)
       : this.products;
 
-    return filteredProducts.slice(startIndex, endIndex);
+    return {
+      data: filteredProducts.slice(startIndex, endIndex),
+      meta: {
+        total: filteredProducts.length,
+        page,
+        limit,
+        totalPages: Math.ceil(filteredProducts.length / limit),
+      },
+    };
   }
 
   /**

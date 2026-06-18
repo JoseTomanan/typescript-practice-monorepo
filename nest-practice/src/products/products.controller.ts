@@ -1,5 +1,6 @@
 import {
-  Controller, Delete, Get, Param, Post, Put, Body, HttpStatus, HttpCode, ParseIntPipe, ValidationPipe, UseGuards
+  Controller, Delete, Get, Param, Post, Put, Body, HttpStatus, HttpCode, ParseIntPipe, ValidationPipe, UseGuards,
+  Query
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -14,8 +15,12 @@ export class ProductsController {
 
   // GET /products
   @Get()
-  findAll() {
-    return this.productsService.findAll();
+  findAll(
+    @Query() categoryId: number,
+    @Query() page: number,
+    @Query() limit: number,
+  ) {
+    return this.productsService.findAll(categoryId, page, limit);
   }
 
   // GET /products/:id
