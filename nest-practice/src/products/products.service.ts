@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Product } from './entities/product.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -38,15 +38,32 @@ export class ProductsService {
     },
   ];
   
+  /**
+   * For GET /products
+   */
   findAll(): Product[] {
     return this.products;
   }
 
-  findOne(id: number): Product | undefined {
-    return this.products.find(product => product.id === id);
+  /**
+   * For GET /products/:id
+   */
+  findOne(id: number): Product {
+    const product = this.products.find(product => product.id === id);
+    if (!product)
+      throw new NotFoundException("Product not found");
+
+    return product;
   }
 
+  /**
+   * For POST /products
+   */
   create(product: CreateProductDto): Product {
+    const categoryExists = this.products.some(product => product.categoryId === product.categoryId);
+    if (!categoryExists)
+      throw new NotFoundException("Category does not exist");
+
     const newProduct: Product = {
       id: this.products.length + 1,
       ...product
@@ -55,11 +72,16 @@ export class ProductsService {
     return newProduct;
   }
 
-  update(id: number, updatedProduct: UpdateProductDto): Product | null {
-    const productIndex = this.products.findIndex(product => product.id === id);
+  /**
+   * For PUT /products/:id
+   */
+  update(id: number, updatedProduct: UpdateProductDto): Product {
+    const productIndex = this.products.findIndex(
+      product => product.id === id
+    );
 
     if (productIndex === -1)
-      return null;
+      throw new NotFoundException("Product not found");
 
     this.products[productIndex] = {
       ...this.products[productIndex],
@@ -68,11 +90,16 @@ export class ProductsService {
     return this.products[productIndex];
   }
 
-  remove(id: number): Product | null {
-    const productIndex = this.products.findIndex(product => product.id === id);
+  /**
+   * For DELETE /products/:id
+   */
+  remove(id: number): Product {
+    const productIndex = this.products.findIndex(
+      product => product.id === id
+    );
 
     if (productIndex === -1)
-      return null;
+      throw new NotFoundException("Product not found");
     
     const removedProduct = this.products.splice(productIndex, 1);
     return removedProduct[0];

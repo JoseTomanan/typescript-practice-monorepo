@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Category } from './entities/category.entity';
 
 @Injectable()
@@ -19,8 +19,11 @@ export class CategoriesService {
   /**
    * For GET /categories/:id
    */
-  findOne(id: number): Category | undefined {
-    return this.categories.find(category => category.id === id);
+  findOne(id: number): Category {
+    const category = this.categories.find(category => category.id === id);
+    if (!category)
+      throw new NotFoundException("Category not found");
+    return category;
   }
 
   /**
@@ -35,11 +38,11 @@ export class CategoriesService {
   /**
    * For PUT /categories/:id
    */
-  update(id: number, name: string): Category | null {
+  update(id: number, name: string): Category {
     const categoryIdIndex = this.categories.findIndex(category => category.id === id);
 
     if (categoryIdIndex === -1)
-      return null;
+      throw new NotFoundException("Category not found");
 
     this.categories[categoryIdIndex].name = name;
     return this.categories[categoryIdIndex];
@@ -48,11 +51,11 @@ export class CategoriesService {
   /**
    * For DELETE /categories/:id
    */
-  remove(id: number): Category | null {
+  remove(id: number): Category {
     const categoryIdIndex = this.categories.findIndex(category => category.id === id);
 
     if (categoryIdIndex === -1)
-      return null;
+      throw new NotFoundException("Category not found");
     
     const removedCategory = this.categories.splice(categoryIdIndex, 1);
     return removedCategory[0];
