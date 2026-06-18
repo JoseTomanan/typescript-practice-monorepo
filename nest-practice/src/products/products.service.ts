@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Query } from '@nestjs/common';
 import { Product } from './entities/product.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -41,8 +41,8 @@ export class ProductsService {
   /**
    * For GET /products
    */
-  findAll(): Product[] {
-    return this.products;
+  findAll(@Query() categoryId: number): Product[] {
+    return this.products.filter(product => product.categoryId === categoryId);
   }
 
   /**
