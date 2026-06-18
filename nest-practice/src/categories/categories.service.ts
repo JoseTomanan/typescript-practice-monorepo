@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { Category } from './entities/category.entity';
 
 @Injectable()
@@ -56,6 +56,13 @@ export class CategoriesService {
 
     if (categoryIdIndex === -1)
       throw new NotFoundException("Category not found");
+
+    const existsAssociatedProducts = this.categories.some(category => category.id === id);
+
+    if (existsAssociatedProducts)
+      throw new BadRequestException(
+        "Cannot delete category with associated products"
+      );
     
     const removedCategory = this.categories.splice(categoryIdIndex, 1);
     return removedCategory[0];
