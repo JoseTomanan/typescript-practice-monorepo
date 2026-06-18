@@ -5,7 +5,6 @@ import {
   Post,
   Put,
   Delete,
-  Query,
   Body,
 } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -14,8 +13,8 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 export class CategoriesController {
   // GET /categories
   @Get()
-  findAll(@Query('location') location: string) {
-    return [{ location }];
+  findAll() {
+    return [{ id: '1' }, { id: '2' }];
   }
 
   // GET /categories/:id
@@ -27,18 +26,21 @@ export class CategoriesController {
   // POST /categories
   @Post()
   create(@Body() createCategoryDto: CreateCategoryDto) {
-    return { name: createCategoryDto.name };
+    return { id: '3', name: createCategoryDto.name };
   }
 
   // PUT /categories/:id
   @Put(':id')
-  update() {
-    // Logic to update a category
+  update(
+    @Param('id') id: string,
+    @Body() updateCategoryDto: CreateCategoryDto,
+  ) {
+    return { id, ...updateCategoryDto };
   }
 
   // DELETE /categories/:id
   @Delete(':id')
-  remove() {
-    // Logic to delete a category
+  remove(@Param('id') id: string) {
+    return { id };
   }
 }
