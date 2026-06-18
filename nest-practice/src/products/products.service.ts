@@ -20,6 +20,20 @@ export class ProductsService {
       stock: 8,
       categoryId: 1
     },
+    {
+      id: 3,
+      name: "LG Refrigerator",
+      price: 79999,
+      stock: 5,
+      categoryId: 2
+    },
+    {
+      id: 4,
+      name: "Honda Chassis",
+      price: 1999,
+      stock: 20,
+      categoryId: 3
+    },
   ];
   
   findAll(): Product[] {
