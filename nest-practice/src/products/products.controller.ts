@@ -19,8 +19,9 @@ export class ProductsController {
     @Query() categoryId: number,
     @Query() page: number,
     @Query() limit: number,
+    @Query() search: string,
   ) {
-    return this.productsService.findAll(categoryId, page, limit);
+    return this.productsService.findAll(categoryId, page, limit, search);
   }
 
   // GET /products/:id

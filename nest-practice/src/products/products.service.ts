@@ -43,8 +43,15 @@ export class ProductsService {
    * For GET /products
    */
   findAll(
-    categoryId?: number, page?: number, limit?: number
+    categoryId?: number,
+    page?: number,
+    limit?: number,
+    search?: string,
   ): PaginationQueryResult<Product> {
+    const decasedSearch: string | null = search
+          ? search.toLowerCase()
+          : null;
+
     if (!page || !limit)
       return {
         data: this.products,
@@ -56,11 +63,16 @@ export class ProductsService {
         },
       };
 
-    const startIndex = (page - 1) * limit;
-    const endIndex = startIndex + limit;
-    const filteredProducts = categoryId
-      ? this.products.filter(product => product.categoryId === categoryId)
-      : this.products;
+    const startIndex: number = (page - 1) * limit;
+    const endIndex: number = startIndex + limit;
+    let filteredProducts: Product[] = categoryId
+          ? this.products.filter(product => product.categoryId === categoryId)
+          : this.products;
+
+    if (decasedSearch)
+      filteredProducts = filteredProducts.filter(product =>
+        product.name.toLowerCase().includes(decasedSearch)
+      );
 
     return {
       data: filteredProducts.slice(startIndex, endIndex),
