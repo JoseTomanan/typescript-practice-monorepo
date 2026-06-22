@@ -79,48 +79,18 @@ export class ProductsService {
    * For PUT /products/:id
    */
   replace(id: number, newProduct: ReplaceProductDto): Product {
-    const productIndex = this.products.findIndex(
-      product => product.id === id
-    );
-
-    if (productIndex === -1)
-      throw new NotFoundException("Product not found");
-
-    this.products[productIndex] = {
-      ...this.products[productIndex],
-      ...newProduct
-    };
-    return this.products[productIndex];
+    
   }
   
   // PATCH /products/:id
   update(id: number, updatedProduct: UpdateProductDto): Product {
-    const productIndex = this.products.findIndex(
-      product => product.id === id
-    );
-
-    if (productIndex === -1)
-      throw new NotFoundException("Product not found");
-
-    this.products[productIndex] = {
-      ...this.products[productIndex],
-      ...updatedProduct
-    };
-    return this.products[productIndex];
+    
   }
 
   /**
    * For DELETE /products/:id
    */
   remove(id: number): Product {
-    const productIndex = this.products.findIndex(
-      product => product.id === id
-    );
-
-    if (productIndex === -1)
-      throw new NotFoundException("Product not found");
     
-    const removedProduct = this.products.splice(productIndex, 1);
-    return removedProduct[0];
   }
 }
