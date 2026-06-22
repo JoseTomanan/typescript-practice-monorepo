@@ -10,9 +10,6 @@ export class FindAllProductsUseCase {
     @Inject(PRODUCT_REPOSITORY) private readonly productRepository: ProductRepository,
   ) {}
 
-  // TODO: port the categoryId/page/limit/search filtering logic from
-  // products.service.ts:46-87. This is the use case orchestrating plain
-  // data from the repository — it should contain no NestJS HTTP types.
   execute(
     categoryId?: number,
     page?: number,
@@ -20,32 +17,32 @@ export class FindAllProductsUseCase {
     search?: string
   ): PaginationQueryResult<Product> {
     const products = this.productRepository.findAll();
+    const decasedSearch: string | null = search ? search.toLowerCase() : null;
 
-    const decasedSearch: string | null = search
-          ? search.toLowerCase()
-          : null;
+    // Apply filters first — regardless of whether pagination was requested.
+    let filteredProducts: Product[] = categoryId
+      ? products.filter(product => product.categoryId === categoryId)
+      : [...products];
 
+    if (decasedSearch)
+      filteredProducts = filteredProducts.filter(product =>
+        product.name.toLowerCase().includes(decasedSearch)
+      );
+
+    // Then paginate — return all filtered results when page/limit are absent.
     if (!page || !limit)
       return {
-        data: products,
+        data: filteredProducts,
         meta: {
-          total: products.length,
+          total: filteredProducts.length,
           page: 1,
-          limit: products.length,
+          limit: filteredProducts.length,
           totalPages: 1,
         },
       };
 
     const startIndex: number = (page - 1) * limit;
     const endIndex: number = startIndex + limit;
-    let filteredProducts: Product[] = categoryId
-          ? products.filter(product => product.categoryId === categoryId)
-          : products;
-
-    if (decasedSearch)
-      filteredProducts = filteredProducts.filter(product =>
-        product.name.toLowerCase().includes(decasedSearch)
-      );
 
     return {
       data: filteredProducts.slice(startIndex, endIndex),
