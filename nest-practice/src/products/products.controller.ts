@@ -1,9 +1,11 @@
 import {
   Controller, Delete, Get, Param, Post, Put, Body, HttpStatus, HttpCode, ParseIntPipe, ValidationPipe, UseGuards,
-  Query
+  Query,
+  Patch
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
+import { ReplaceProductDto } from './dto/replace-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ApiKeyGuard } from '../app.guard';
 
@@ -40,7 +42,17 @@ export class ProductsController {
   // PUT /products/:id
   @Put(':id')
   @UseGuards(ApiKeyGuard)
-  update(
+  replace(
+    @Param('id', ParseIntPipe) id: number,
+    @Body(new ValidationPipe) replaceProductDto: ReplaceProductDto,
+  ) {
+    return this.productsService.replace(id, replaceProductDto);
+  }
+
+  // PATCH /products/:id
+  @Patch(':id')
+  @UseGuards(ApiKeyGuard)
+  updateExisting(
     @Param('id', ParseIntPipe) id: number,
     @Body(new ValidationPipe) updateProductDto: UpdateProductDto,
   ) {

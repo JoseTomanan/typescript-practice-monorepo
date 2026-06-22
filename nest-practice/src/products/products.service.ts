@@ -3,6 +3,7 @@ import { Product } from './entities/product.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { PaginationQueryResult } from './dto/pagination-query.dto';
+import { ReplaceProductDto } from './dto/replace-product.dto';
 
 
 
@@ -115,6 +116,22 @@ export class ProductsService {
   /**
    * For PUT /products/:id
    */
+  replace(id: number, newProduct: ReplaceProductDto): Product {
+    const productIndex = this.products.findIndex(
+      product => product.id === id
+    );
+
+    if (productIndex === -1)
+      throw new NotFoundException("Product not found");
+
+    this.products[productIndex] = {
+      ...this.products[productIndex],
+      ...newProduct
+    };
+    return this.products[productIndex];
+  }
+  
+  // PATCH /products/:id
   update(id: number, updatedProduct: UpdateProductDto): Product {
     const productIndex = this.products.findIndex(
       product => product.id === id
