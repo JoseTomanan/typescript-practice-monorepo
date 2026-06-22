@@ -3,11 +3,11 @@ import {
   Query,
   Patch
 } from '@nestjs/common';
-import { ProductsService } from './products.service';
-import { CreateProductDto } from './presentation/create-product.dto';
-import { ReplaceProductDto } from './presentation/replace-product.dto';
-import { UpdateProductDto } from './presentation/update-product.dto';
-import { ApiKeyGuard } from '../app.guard';
+import { ProductsService } from '../products.service';
+import { CreateProductDto } from './create-product.dto';
+import { ReplaceProductDto } from './replace-product.dto';
+import { UpdateProductDto } from './update-product.dto';
+import { ApiKeyGuard } from '../../app.guard';
 
 
 
