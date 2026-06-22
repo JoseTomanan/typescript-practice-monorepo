@@ -4,9 +4,9 @@ import {
   Patch
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
-import { CreateProductDto } from './dto/create-product.dto';
-import { ReplaceProductDto } from './dto/replace-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
+import { CreateProductDto } from './presentation/create-product.dto';
+import { ReplaceProductDto } from './presentation/replace-product.dto';
+import { UpdateProductDto } from './presentation/update-product.dto';
 import { ApiKeyGuard } from '../app.guard';
 
 

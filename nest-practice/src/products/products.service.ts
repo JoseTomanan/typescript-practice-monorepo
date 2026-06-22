@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException, Query } from '@nestjs/common';
-import { Product } from './entities/product.entity';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
-import { PaginationQueryResult } from './dto/pagination-query.dto';
-import { ReplaceProductDto } from './dto/replace-product.dto';
+import { Product } from './domain/product.entity';
+import { CreateProductDto } from './presentation/create-product.dto';
+import { UpdateProductDto } from './presentation/update-product.dto';
+import { PaginationQueryResult } from './presentation/pagination-query.dto';
+import { ReplaceProductDto } from './presentation/replace-product.dto';
 
 
 
