@@ -2,7 +2,7 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { PRODUCT_REPOSITORY } from '../../domain/product.repository';
 import type { ProductRepository } from '../../domain/product.repository';
 import { Product } from '../../domain/product.entity';
-import { UpdateProductDto } from '../../presentation/update-product.dto';
+import { UpdateProductInput } from '../dto/product-inputs';
 
 @Injectable()
 export class UpdateProductUseCase {
@@ -10,7 +10,7 @@ export class UpdateProductUseCase {
     @Inject(PRODUCT_REPOSITORY) private readonly productRepository: ProductRepository,
   ) {}
 
-  execute(id: number, dto: UpdateProductDto): Product {
+  execute(id: number, dto: UpdateProductInput): Product {
     const products = this.productRepository.findAll();
     const productIndex = products.findIndex(
       product => product.id === id

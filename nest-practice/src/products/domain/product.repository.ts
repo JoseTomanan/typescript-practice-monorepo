@@ -12,11 +12,7 @@ export interface ProductRepository {
   save(product: Product): Product;
   remove(id: number): Product | undefined;
 
-  // TODO: findAll() currently has no args, but products.service.ts:46-87
-  // filters by categoryId/page/limit/search. Decide: should those
-  // params live on this interface (repository does the filtering), or
-  // should findAll() return everything and a use case filters in memory?
-  // That decision is the actual architecture call here — not boilerplate.
+  // TODO: findAll() filtering of category
 }
 
 // DI token NestJS will use to bind this interface to a concrete class,

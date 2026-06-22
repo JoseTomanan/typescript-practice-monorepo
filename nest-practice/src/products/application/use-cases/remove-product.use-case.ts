@@ -9,17 +9,17 @@ export class RemoveProductUseCase {
     @Inject(PRODUCT_REPOSITORY) private readonly productRepository: ProductRepository,
   ) {}
 
+  // TODO: review — rewritten from the version you wrote (which fetched
+  // findAll(), spliced locally to find the NotFoundException case, then
+  // separately called repository.remove()). This collapses both steps
+  // into one repository.remove() call. Functionally equivalent, but it's
+  // my rewrite, not a port of your code — check you're OK with it.
   execute(id: number): Product {
-    const products = this.productRepository.findAll();
-    const productIndex = products.findIndex(
-      product => product.id === id
-    );
+    const removedProduct = this.productRepository.remove(id);
 
-    if (productIndex === -1)
+    if (!removedProduct)
       throw new NotFoundException("Product not found");
-    
-    const removedProduct = products.splice(productIndex, 1);
-    this.productRepository.remove(removedProduct[0].id);
-    return removedProduct[0];
+
+    return removedProduct;
   }
 }
