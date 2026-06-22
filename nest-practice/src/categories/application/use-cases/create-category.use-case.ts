@@ -11,7 +11,10 @@ export class CreateCategoryUseCase {
 
   execute(name: string): Category {
     const categories = this.categoryRepository.findAll();
-    const newCategory: Category = { id: categories.length + 1, name };
+    const newCategory: Category = {
+      id: Math.max(0, ...categories.map(c => c.id)) + 1,
+      name,
+    };
 
     this.categoryRepository.save(newCategory);
     return newCategory;

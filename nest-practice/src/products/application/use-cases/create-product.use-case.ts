@@ -21,7 +21,7 @@ export class CreateProductUseCase {
 
     const products = this.productRepository.findAll();
     const newProduct: Product = {
-      id: products.length + 1,
+      id: Math.max(0, ...products.map(p => p.id)) + 1,
       ...input
     };
 
