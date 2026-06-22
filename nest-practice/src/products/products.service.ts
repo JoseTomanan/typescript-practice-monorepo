@@ -9,36 +9,7 @@ import { ReplaceProductDto } from './presentation/replace-product.dto';
 
 @Injectable()
 export class ProductsService {
-  private products: Product[] = [
-    {
-      id: 1,
-      name: "iPhone 15",
-      price: 59999,
-      stock: 10,
-      categoryId: 1
-    },
-    {
-      id: 2,
-      name: "Samsung S25",
-      price: 54999,
-      stock: 8,
-      categoryId: 1
-    },
-    {
-      id: 3,
-      name: "LG Refrigerator",
-      price: 79999,
-      stock: 5,
-      categoryId: 2
-    },
-    {
-      id: 4,
-      name: "Honda Chassis",
-      price: 1999,
-      stock: 20,
-      categoryId: 3
-    },
-  ];
+  
   
   /**
    * For GET /products
@@ -63,16 +34,7 @@ export class ProductsService {
    * For POST /products
    */
   create(product: CreateProductDto): Product {
-    const categoryExists = this.products.some(product => product.categoryId === product.categoryId);
-    if (!categoryExists)
-      throw new NotFoundException("Category does not exist");
-
-    const newProduct: Product = {
-      id: this.products.length + 1,
-      ...product
-    };
-    this.products.push(newProduct);
-    return newProduct;
+    
   }
 
   /**
