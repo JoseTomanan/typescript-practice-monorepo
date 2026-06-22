@@ -1,9 +1,9 @@
 import {
   Controller, Param, Get, Post, Put, Delete, Body, ParseIntPipe, HttpStatus, HttpCode, ValidationPipe, UseGuards,
 } from '@nestjs/common';
-import { CreateCategoryDto } from './dto/create-category.dto';
+import { CreateCategoryDto } from './presentation/create-category.dto';
 import { CategoriesService } from './categories.service';
-import { UpdateCategoryDto } from './dto/update-category.dto';
+import { UpdateCategoryDto } from './presentation/update-category.dto';
 import { ApiKeyGuard } from '../app.guard';
 
 

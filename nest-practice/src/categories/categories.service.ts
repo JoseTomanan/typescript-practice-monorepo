@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { Category } from './entities/category.entity';
+import { Category } from './domain/category.entity';
 
 @Injectable()
 export class CategoriesService {
