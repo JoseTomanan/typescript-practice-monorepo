@@ -19,10 +19,9 @@ export class ReplaceProductUseCase {
     if (productIndex === -1)
       throw new NotFoundException("Product not found");
 
-    const replacedProduct = {
-      ...products[productIndex],
-      ...dto
-    };
+    // PUT: full replacement — build from the DTO only (all fields required by
+    // ReplaceProductInput), preserving only the id from the existing record.
+    const replacedProduct: Product = { id, ...dto };
 
     this.productRepository.save(replacedProduct);
     return replacedProduct;
