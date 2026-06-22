@@ -49,41 +49,7 @@ export class ProductsService {
     limit?: number,
     search?: string,
   ): PaginationQueryResult<Product> {
-    const decasedSearch: string | null = search
-          ? search.toLowerCase()
-          : null;
-
-    if (!page || !limit)
-      return {
-        data: this.products,
-        meta: {
-          total: this.products.length,
-          page: 1,
-          limit: this.products.length,
-          totalPages: 1,
-        },
-      };
-
-    const startIndex: number = (page - 1) * limit;
-    const endIndex: number = startIndex + limit;
-    let filteredProducts: Product[] = categoryId
-          ? this.products.filter(product => product.categoryId === categoryId)
-          : this.products;
-
-    if (decasedSearch)
-      filteredProducts = filteredProducts.filter(product =>
-        product.name.toLowerCase().includes(decasedSearch)
-      );
-
-    return {
-      data: filteredProducts.slice(startIndex, endIndex),
-      meta: {
-        total: filteredProducts.length,
-        page,
-        limit,
-        totalPages: Math.ceil(filteredProducts.length / limit),
-      },
-    };
+    
   }
 
   /**
