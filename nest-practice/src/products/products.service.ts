@@ -90,11 +90,7 @@ export class ProductsService {
    * For GET /products/:id
    */
   findOne(id: number): Product {
-    const product = this.products.find(product => product.id === id);
-    if (!product)
-      throw new NotFoundException("Product not found");
-
-    return product;
+    
   }
 
   /**
