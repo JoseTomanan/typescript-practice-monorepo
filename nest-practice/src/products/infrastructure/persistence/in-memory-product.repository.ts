@@ -41,7 +41,7 @@ export class InMemoryProductRepository implements ProductRepository {
   ];
 
   findAll(): Product[] {
-    return this.products;
+    return [...this.products];
   }
 
   findOne(id: number): Product | undefined {

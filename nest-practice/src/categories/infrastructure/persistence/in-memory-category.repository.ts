@@ -16,7 +16,7 @@ export class InMemoryCategoryRepository implements CategoryRepository {
   ];
 
   findAll(): Category[] {
-    return this.categories;
+    return [...this.categories];
   }
 
   findOne(id: number): Category | undefined {
