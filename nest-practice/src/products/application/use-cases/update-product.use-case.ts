@@ -11,16 +11,12 @@ export class UpdateProductUseCase {
   ) {}
 
   execute(id: number, dto: UpdateProductInput): Product {
-    const products = this.productRepository.findAll();
-    const productIndex = products.findIndex(
-      product => product.id === id
-    );
-
-    if (productIndex === -1)
-      throw new NotFoundException("Product not found");
+    const existing = this.productRepository.findOne(id);
+    if (!existing)
+      throw new NotFoundException('Product not found');
 
     const updatedProduct = {
-      ...products[productIndex],
+      ...existing,
       ...dto
     };
 

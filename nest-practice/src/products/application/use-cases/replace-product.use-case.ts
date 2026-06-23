@@ -11,16 +11,10 @@ export class ReplaceProductUseCase {
   ) {}
 
   execute(id: number, dto: ReplaceProductInput): Product {
-    const products = this.productRepository.findAll();
-    const productIndex = products.findIndex(
-      product => product.id === id
-    );
+    const existing = this.productRepository.findOne(id);
+    if (!existing)
+      throw new NotFoundException('Product not found');
 
-    if (productIndex === -1)
-      throw new NotFoundException("Product not found");
-
-    // PUT: full replacement — build from the DTO only (all fields required by
-    // ReplaceProductInput), preserving only the id from the existing record.
     const replacedProduct: Product = { id, ...dto };
 
     this.productRepository.save(replacedProduct);
