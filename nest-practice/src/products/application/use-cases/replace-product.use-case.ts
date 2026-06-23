@@ -15,6 +15,8 @@ export class ReplaceProductUseCase {
     if (!existing)
       throw new NotFoundException('Product not found');
 
+    // TODO: (if need) validate category ID exists (same w create product)
+
     const replacedProduct: Product = { id, ...dto };
 
     this.productRepository.save(replacedProduct);

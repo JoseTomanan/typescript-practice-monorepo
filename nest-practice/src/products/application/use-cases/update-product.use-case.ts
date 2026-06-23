@@ -15,6 +15,8 @@ export class UpdateProductUseCase {
     if (!existing)
       throw new NotFoundException('Product not found');
 
+    // TODO: (if need) validate category ID exists (same w create product)
+
     const updatedProduct = {
       ...existing,
       ...dto
