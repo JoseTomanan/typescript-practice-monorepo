@@ -1,3 +1,4 @@
+import { BadRequestException } from '@nestjs/common';
 import { FindAllProductsUseCase } from './find-all-products.use-case';
 import { ProductRepository } from '../../domain/product.repository';
 import { Product } from '../../domain/product.entity';
@@ -66,5 +67,26 @@ describe('FindAllProductsUseCase', () => {
     const result = useCase.execute(undefined, undefined, undefined, 'nonexistent');
 
     expect(result.data).toEqual([]);
+  });
+
+  it('returns only products within the inclusive price range', () => {
+    const result = useCase.execute(undefined, undefined, undefined, undefined, 29999, 60000);
+
+    expect(result.data.map(product => product.name)).toEqual(
+      expect.arrayContaining(['iPhone 15', 'Galaxy Phone', 'Galaxy Tab']),
+    );
+    expect(result.data).toHaveLength(3);
+  });
+
+  it('applies minPrice and maxPrice independently when only one is provided', () => {
+    const result = useCase.execute(undefined, undefined, undefined, undefined, 60000);
+
+    expect(result.data.map(product => product.name)).toEqual(['LG Refrigerator']);
+  });
+
+  it('throws BadRequestException when minPrice is greater than maxPrice', () => {
+    expect(() =>
+      useCase.execute(undefined, undefined, undefined, undefined, 60000, 10000),
+    ).toThrow(BadRequestException);
   });
 });

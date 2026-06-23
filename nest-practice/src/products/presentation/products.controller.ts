@@ -41,8 +41,10 @@ export class ProductsController {
     @Query('page', new ParseIntPipe({ optional: true })) page?: number,
     @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
     @Query('search') search?: string,
+    @Query('minPrice', new ParseIntPipe({ optional: true })) minPrice?: number,
+    @Query('maxPrice', new ParseIntPipe({ optional: true })) maxPrice?: number,
   ) {
-    return this.findAllProductsUseCase.execute(categoryId, page, limit, search);
+    return this.findAllProductsUseCase.execute(categoryId, page, limit, search, minPrice, maxPrice);
   }
 
   // GET /products/:id

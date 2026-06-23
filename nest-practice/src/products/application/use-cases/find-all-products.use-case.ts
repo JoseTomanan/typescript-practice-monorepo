@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { PRODUCT_REPOSITORY } from '../../domain/product.repository';
 import type { ProductRepository } from '../../domain/product.repository';
 import { PaginationQueryResult } from '../../application/dto/pagination-result.dto';
@@ -14,12 +14,17 @@ export class FindAllProductsUseCase {
     categoryId?: number,
     page?: number,
     limit?: number,
-    search?: string
+    search?: string,
+    minPrice?: number,
+    maxPrice?: number,
   ): PaginationQueryResult<Product> {
+    if (minPrice !== undefined && maxPrice !== undefined && minPrice > maxPrice)
+      throw new BadRequestException('minPrice must not be greater than maxPrice');
+
     const products = this.productRepository.findAll();
     const decasedSearch: string | null = search ? search.toLowerCase() : null;
 
-    // Apply filters first — regardless of whether pagination was requested.
+    // Apply filter
     let filteredProducts: Product[] = categoryId
       ? products.filter(product => product.categoryId === categoryId)
       : [...products];
@@ -29,7 +34,14 @@ export class FindAllProductsUseCase {
         product.name.toLowerCase().includes(decasedSearch)
       );
 
-    // Then paginate — return all filtered results when page/limit are absent.
+    // Filter accdg to min price, max price
+    if (minPrice !== undefined)
+      filteredProducts = filteredProducts.filter(product => product.price >= minPrice);
+
+    if (maxPrice !== undefined)
+      filteredProducts = filteredProducts.filter(product => product.price <= maxPrice);
+
+    // Pagination
     if (!page || !limit)
       return {
         data: filteredProducts,
