@@ -5,6 +5,7 @@ import { Product } from '../../domain/product.entity';
 import { CreateProductInput } from '../dto/product-inputs';
 import { CATEGORY_REPOSITORY } from '../../../categories/domain/category.repository';
 import type { CategoryRepository } from '../../../categories/domain/category.repository';
+import { ProductReturnDto } from '../dto/product-return.dto';
 
 // FIXME: review
 @Injectable()
@@ -14,9 +15,9 @@ export class CreateProductUseCase {
     @Inject(CATEGORY_REPOSITORY) private readonly categoryRepository: CategoryRepository,
   ) {}
 
-  execute(input: CreateProductInput): Product {
-    const categoryExists = this.categoryRepository.findOne(input.categoryId);
-    if (!categoryExists)
+  execute(input: CreateProductInput): ProductReturnDto {
+    const correspondingCategory = this.categoryRepository.findOne(input.categoryId);
+    if (!correspondingCategory)
       throw new NotFoundException("Category does not exist");
 
     const products = this.productRepository.findAll();
@@ -26,6 +27,12 @@ export class CreateProductUseCase {
     };
 
     this.productRepository.save(newProduct);
-    return newProduct;
+    return {
+      id: newProduct.id,
+      name: newProduct.name,
+      price: newProduct.price,
+      stock: newProduct.stock,
+      category: correspondingCategory,
+    };
   }
 }
