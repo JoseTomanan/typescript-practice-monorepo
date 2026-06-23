@@ -1,5 +1,5 @@
 import {
-  Controller, Param, Get, Post, Put, Delete, Body, ParseIntPipe, HttpStatus, HttpCode, ValidationPipe, UseGuards,
+  Controller, Param, Get, Post, Put, Delete, Body, ParseIntPipe, HttpStatus, HttpCode, UseGuards,
 } from '@nestjs/common';
 import { CreateCategoryDto } from './create-category.dto';
 import { UpdateCategoryDto } from './update-category.dto';
@@ -37,7 +37,7 @@ export class CategoriesController {
   // POST /categories
   @Post()
   @UseGuards(ApiKeyGuard)
-  create(@Body(new ValidationPipe) createCategoryDto: CreateCategoryDto) {
+  create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.createCategoryUseCase.execute(createCategoryDto.name);
   }
 
@@ -46,7 +46,7 @@ export class CategoriesController {
   @UseGuards(ApiKeyGuard)
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body(new ValidationPipe) updateCategoryDto: UpdateCategoryDto,
+    @Body() updateCategoryDto: UpdateCategoryDto,
   ) {
     return this.updateCategoryUseCase.execute(id, updateCategoryDto.name);
   }

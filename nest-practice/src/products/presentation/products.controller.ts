@@ -1,5 +1,5 @@
 import {
-  Controller, Delete, Get, Param, Post, Put, Body, HttpStatus, HttpCode, ParseIntPipe, ValidationPipe, UseGuards,
+  Controller, Delete, Get, Param, Post, Put, Body, HttpStatus, HttpCode, ParseIntPipe, UseGuards,
   Query,
   Patch
 } from '@nestjs/common';
@@ -54,7 +54,7 @@ export class ProductsController {
   // POST /products
   @Post()
   @UseGuards(ApiKeyGuard)
-  create(@Body(new ValidationPipe) createProductDto: CreateProductDto) {
+  create(@Body() createProductDto: CreateProductDto) {
     return this.createProductUseCase.execute(createProductDto);
   }
 
@@ -63,7 +63,7 @@ export class ProductsController {
   @UseGuards(ApiKeyGuard)
   replace(
     @Param('id', ParseIntPipe) id: number,
-    @Body(new ValidationPipe) replaceProductDto: ReplaceProductDto,
+    @Body() replaceProductDto: ReplaceProductDto,
   ) {
     return this.replaceProductUseCase.execute(id, replaceProductDto);
   }
@@ -73,7 +73,7 @@ export class ProductsController {
   @UseGuards(ApiKeyGuard)
   updateExisting(
     @Param('id', ParseIntPipe) id: number,
-    @Body(new ValidationPipe) updateProductDto: UpdateProductDto,
+    @Body() updateProductDto: UpdateProductDto,
   ) {
     return this.updateProductUseCase.execute(id, updateProductDto);
   }
