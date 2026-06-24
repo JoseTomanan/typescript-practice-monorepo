@@ -17,7 +17,9 @@ export class UpdateProductUseCase {
     if (!existing)
       throw new NotFoundException('Product not found');
 
-    const correspondingCategory = dto.categoryId ? this.categoryRepository.findOne(dto.categoryId) : existing;
+    const correspondingCategory = dto.categoryId
+          ? this.categoryRepository.findOne(dto.categoryId ?? existing.categoryId)
+          : existing;
 
     if (!correspondingCategory)
       throw new NotFoundException("Category for product not found");
