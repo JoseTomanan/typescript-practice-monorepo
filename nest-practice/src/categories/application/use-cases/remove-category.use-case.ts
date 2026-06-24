@@ -11,7 +11,9 @@ export class RemoveCategoryUseCase {
 
   // TODO: Implement "cannot delete category with associated products" rule
   // use ProductRepository for this
-  // ^^ realize that a circular dependency might happen; consider how to resolve it (e.g., using forwardRef in NestJS)
+  // ^^ realize that a circular dependency might happen
+  // consider how to resolve it (e.g., using forwardRef in NestJS)
+  // alternatively: use UseFactory to import repositories instead of direct injection
   execute(id: number): Category {
     const removedCategory = this.categoryRepository.remove(id);
 

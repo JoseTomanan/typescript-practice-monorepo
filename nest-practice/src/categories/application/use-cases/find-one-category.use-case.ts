@@ -7,6 +7,7 @@ import { Category } from '../../domain/category.entity';
 export class FindOneCategoryUseCase {
   constructor(
     @Inject(CATEGORY_REPOSITORY) private readonly categoryRepository: CategoryRepository,
+    // TODO: explore UseFactory (from NestJS)
   ) {}
 
   execute(id: number): Category {
