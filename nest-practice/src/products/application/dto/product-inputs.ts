@@ -7,9 +7,9 @@
  * want before relying on it elsewhere.
  *
  * Application-layer input types. These are what the use cases accept —
- * plain data, no class-validator decorators, no NestJS coupling. The
- * presentation DTOs (which DO carry validation decorators) are
- * structurally compatible, so controllers can pass them straight through
+ * plain data, no Zod schemas, no NestJS coupling. The
+ * presentation DTOs are structurally compatible, so controllers can pass
+ * them straight through
  * without any mapping step.
  */
 export interface CreateProductInput {
