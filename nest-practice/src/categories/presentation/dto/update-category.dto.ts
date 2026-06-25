@@ -1,6 +1,7 @@
-import { IsString } from 'class-validator';
+import { z } from "zod";
 
-export class UpdateCategoryDto {
-  @IsString()
-  name!: string;
-}
+export const UpdateCategorySchema = z.object({
+  name: z.string().min(1, { message: "Name must be at least 1 character long" }),
+});
+
+export type UpdateCategoryDto = z.infer<typeof UpdateCategorySchema>;
