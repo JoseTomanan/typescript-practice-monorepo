@@ -9,10 +9,11 @@ import { CreateProductUseCase } from '../application/use-cases/create-product.us
 import { ReplaceProductUseCase } from '../application/use-cases/replace-product.use-case';
 import { UpdateProductUseCase } from '../application/use-cases/update-product.use-case';
 import { RemoveProductUseCase } from '../application/use-cases/remove-product.use-case';
-import { CreateProductDto } from './dto/create-product.dto';
-import { ReplaceProductDto } from './dto/replace-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
+import { type CreateProductDto, CreateProductSchema } from './dto/create-product.dto';
+import { type ReplaceProductDto, ReplaceProductSchema } from './dto/replace-product.dto';
+import { type UpdateProductDto, UpdateProductSchema } from './dto/update-product.dto';
 import { ApiKeyGuard } from '../../app.guard';
+import { ZodValidationPipe } from '../../app.pipe';
 
 
 
@@ -27,13 +28,6 @@ export class ProductsController {
     private removeProductUseCase: RemoveProductUseCase,
   ) {}
 
-  // TODO: review — this handler's params were originally bare
-  // `@Query() categoryId: number` etc. (each one binding the *entire*
-  // query object, a pre-existing bug). I changed it to keyed
-  // `@Query('name', ParseIntPipe)` params while verifying the endpoint
-  // worked. Not something you wrote or asked for — a bug fix I made on
-  // my own initiative during verification. Worth confirming you want it
-  // fixed this way (vs. reverting and tracking it separately).
   // GET /products
   @Get()
   findAll(
@@ -56,7 +50,9 @@ export class ProductsController {
   // POST /products
   @Post()
   @UseGuards(ApiKeyGuard)
-  create(@Body() createProductDto: CreateProductDto) {
+  create(
+    @Body(new ZodValidationPipe(CreateProductSchema)) createProductDto: CreateProductDto,
+  ) {
     return this.createProductUseCase.execute(createProductDto);
   }
 
@@ -65,7 +61,7 @@ export class ProductsController {
   @UseGuards(ApiKeyGuard)
   replace(
     @Param('id', ParseIntPipe) id: number,
-    @Body() replaceProductDto: ReplaceProductDto,
+    @Body(new ZodValidationPipe(ReplaceProductSchema)) replaceProductDto: ReplaceProductDto,
   ) {
     return this.replaceProductUseCase.execute(id, replaceProductDto);
   }
@@ -75,7 +71,7 @@ export class ProductsController {
   @UseGuards(ApiKeyGuard)
   updateExisting(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateProductDto: UpdateProductDto,
+    @Body(new ZodValidationPipe(UpdateProductSchema)) updateProductDto: UpdateProductDto,
   ) {
     return this.updateProductUseCase.execute(id, updateProductDto);
   }

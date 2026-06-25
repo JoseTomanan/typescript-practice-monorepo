@@ -1,3 +1,4 @@
-import { CreateProductDto } from "./create-product.dto";
+import { CreateProductDto, CreateProductSchema } from "./create-product.dto";
 
-export class ReplaceProductDto extends CreateProductDto {}
+export const ReplaceProductSchema = CreateProductSchema;
+export type ReplaceProductDto = CreateProductDto;

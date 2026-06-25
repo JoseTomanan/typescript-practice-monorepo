@@ -1,19 +1,13 @@
-import { IsString, IsNumber, IsInt, Min, IsPositive, MinLength } from 'class-validator';
-// TODO: replace class-validator with Zod
+import { z } from "zod";
 
-export class CreateProductDto {
-  @IsString()
-  @MinLength(2)
-  name!: string;
+export const CreateProductSchema = z.object({
+  name: z.string()
+    .min(2, { message: "Name must be at least 2 characters long" }),
+  price: z.number()
+    .positive({ message: "Price must be a positive number" }),
+  stock: z.number()
+    .min(0, { message: "Stock must be a non-negative number" }),
+  categoryId: z.number()
+});
 
-  @IsNumber()
-  @IsPositive()
-  price!: number;
-
-  @IsInt()
-  @Min(0)
-  stock!: number;
-
-  @IsInt()
-  categoryId!: number;
-}
+export type CreateProductDto = z.infer<typeof CreateProductSchema>;

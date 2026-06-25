@@ -1,5 +1,6 @@
-import { IsInt, IsNumber, IsString } from "class-validator";
-import { CreateProductDto } from "./create-product.dto";
-import { PartialType } from "@nestjs/mapped-types";
+import { z } from "zod";
+import { CreateProductSchema } from "./create-product.dto";
 
-export class UpdateProductDto extends PartialType(CreateProductDto) {}
+export const UpdateProductSchema = CreateProductSchema.partial();
+
+export type UpdateProductDto = z.infer<typeof UpdateProductSchema>;
