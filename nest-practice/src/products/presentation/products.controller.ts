@@ -9,9 +9,9 @@ import { CreateProductUseCase } from '../application/use-cases/create-product.us
 import { ReplaceProductUseCase } from '../application/use-cases/replace-product.use-case';
 import { UpdateProductUseCase } from '../application/use-cases/update-product.use-case';
 import { RemoveProductUseCase } from '../application/use-cases/remove-product.use-case';
-import { CreateProductDto } from './create-product.dto';
-import { ReplaceProductDto } from './replace-product.dto';
-import { UpdateProductDto } from './update-product.dto';
+import { CreateProductDto } from './dto/create-product.dto';
+import { ReplaceProductDto } from './dto/replace-product.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 import { ApiKeyGuard } from '../../app.guard';
 
 

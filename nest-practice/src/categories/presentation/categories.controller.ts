@@ -1,8 +1,8 @@
 import {
   Controller, Param, Get, Post, Put, Delete, Body, ParseIntPipe, HttpStatus, HttpCode, UseGuards,
 } from '@nestjs/common';
-import { CreateCategoryDto } from './create-category.dto';
-import { UpdateCategoryDto } from './update-category.dto';
+import { CreateCategoryDto } from './dto/create-category.dto';
+import { UpdateCategoryDto } from './dto/update-category.dto';
 import { FindAllCategoriesUseCase } from '../application/use-cases/find-all-categories.use-case';
 import { FindOneCategoryUseCase } from '../application/use-cases/find-one-category.use-case';
 import { CreateCategoryUseCase } from '../application/use-cases/create-category.use-case';
