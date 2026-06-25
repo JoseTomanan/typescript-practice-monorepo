@@ -1,7 +1,7 @@
 import {
   Controller, Param, Get, Post, Put, Delete, Body, ParseIntPipe, HttpStatus, HttpCode, UseGuards,
 } from '@nestjs/common';
-import { CreateCategoryDto } from './dto/create-category.dto';
+import { type CreateCategoryDto, CreateCategorySchema } from './dto/create-category.dto';
 import { type UpdateCategoryDto, UpdateCategorySchema } from './dto/update-category.dto';
 import { ZodValidationPipe } from '../../app.pipe';
 import { FindAllCategoriesUseCase } from '../application/use-cases/find-all-categories.use-case';
@@ -36,7 +36,9 @@ export class CategoriesController {
   // POST /categories
   @Post()
   @UseGuards(ApiKeyGuard)
-  create(@Body() createCategoryDto: CreateCategoryDto) {
+  create(
+    @Body(new ZodValidationPipe(CreateCategorySchema)) createCategoryDto: CreateCategoryDto,
+  ) {
     return this.createCategoryUseCase.execute(createCategoryDto.name);
   }
 
