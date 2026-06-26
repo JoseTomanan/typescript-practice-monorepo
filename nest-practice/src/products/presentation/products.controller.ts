@@ -13,7 +13,7 @@ import { type CreateProductDto, CreateProductSchema } from './dto/create-product
 import { type ReplaceProductDto, ReplaceProductSchema } from './dto/replace-product.dto';
 import { type UpdateProductDto, UpdateProductSchema } from './dto/update-product.dto';
 import { ApiKeyGuard } from '../../app.guard';
-import { ZodValidationPipe } from '../../app.pipe';
+import { IdParamDto } from '../../app.params.dto';
 
 
 
@@ -42,8 +42,11 @@ export class ProductsController {
   }
 
   // GET /products/:id
+  // TODO: review — previously `@Param('id', ParseIntPipe) id: number` (see
+  // app.params.dto.ts for why this changed). `{ id }: IdParamDto` destructures
+  // the single field straight out of the validated params object.
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
+  findOne(@Param() { id }: IdParamDto) {
     return this.findOneProductUseCase.execute(id);
   }
 
@@ -57,30 +60,36 @@ export class ProductsController {
   }
 
   // PUT /products/:id
+  // TODO: review — see findOne above for why this is `{ id }: IdParamDto`
+  // instead of `@Param('id', ParseIntPipe) id: number`.
   @Put(':id')
   @UseGuards(ApiKeyGuard)
   replace(
-    @Param('id', ParseIntPipe) id: number,
+    @Param() { id }: IdParamDto,
     @Body(new ZodValidationPipe(ReplaceProductSchema)) replaceProductDto: ReplaceProductDto,
   ) {
     return this.replaceProductUseCase.execute(id, replaceProductDto);
   }
 
   // PATCH /products/:id
+  // TODO: review — see findOne above for why this is `{ id }: IdParamDto`
+  // instead of `@Param('id', ParseIntPipe) id: number`.
   @Patch(':id')
   @UseGuards(ApiKeyGuard)
   updateExisting(
-    @Param('id', ParseIntPipe) id: number,
+    @Param() { id }: IdParamDto,
     @Body(new ZodValidationPipe(UpdateProductSchema)) updateProductDto: UpdateProductDto,
   ) {
     return this.updateProductUseCase.execute(id, updateProductDto);
   }
 
   // DELETE /products/:id
+  // TODO: review — see findOne above for why this is `{ id }: IdParamDto`
+  // instead of `@Param('id', ParseIntPipe) id: number`.
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(ApiKeyGuard)
-  remove(@Param('id', ParseIntPipe) id: number) {
+  remove(@Param() { id }: IdParamDto) {
     return this.removeProductUseCase.execute(id);
   }
 }

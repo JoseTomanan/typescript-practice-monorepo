@@ -1,5 +1,5 @@
 import {
-  Controller, Param, Get, Post, Put, Delete, Body, ParseIntPipe, HttpStatus, HttpCode, UseGuards,
+  Controller, Param, Get, Post, Put, Delete, Body, HttpStatus, HttpCode, UseGuards,
 } from '@nestjs/common';
 import { type CreateCategoryDto, CreateCategorySchema } from './dto/create-category.dto';
 import { type UpdateCategoryDto, UpdateCategorySchema } from './dto/update-category.dto';
@@ -10,6 +10,7 @@ import { CreateCategoryUseCase } from '../application/use-cases/create-category.
 import { UpdateCategoryUseCase } from '../application/use-cases/update-category.use-case';
 import { RemoveCategoryUseCase } from '../application/use-cases/remove-category.use-case';
 import { ApiKeyGuard } from '../../app.guard';
+import { IdParamDto } from '../../app.params.dto';
 
 @Controller('categories')
 export class CategoriesController {
@@ -28,8 +29,14 @@ export class CategoriesController {
   }
 
   // GET /categories/:id
+  // TODO: review — previously `@Param('id', ParseIntPipe) id: number`. The
+  // global ZodValidationPipe (see app.pipe.ts) now has
+  // `strictSchemaDeclaration: true`, which throws on any param whose type
+  // isn't a `createZodDto` class — `number` doesn't qualify, so this had to
+  // move to `{ id }: IdParamDto` (shared across products + categories, see
+  // app.params.dto.ts), destructuring the validated/coerced id back out.
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
+  findOne(@Param() { id }: IdParamDto) {
     return this.findOneCategoryUseCase.execute(id);
   }
 
@@ -43,20 +50,24 @@ export class CategoriesController {
   }
 
   // PUT /categories/:id
+  // TODO: review — see findOne above for why this is `{ id }: IdParamDto`
+  // instead of `@Param('id', ParseIntPipe) id: number`.
   @Put(':id')
   @UseGuards(ApiKeyGuard)
   update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param() { id }: IdParamDto,
     @Body(new ZodValidationPipe(UpdateCategorySchema)) updateCategoryDto: UpdateCategoryDto,
   ) {
     return this.updateCategoryUseCase.execute(id, updateCategoryDto.name);
   }
 
   // DELETE /categories/:id
+  // TODO: review — see findOne above for why this is `{ id }: IdParamDto`
+  // instead of `@Param('id', ParseIntPipe) id: number`.
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(ApiKeyGuard)
-  remove(@Param('id', ParseIntPipe) id: number) {
+  remove(@Param() { id }: IdParamDto) {
     return this.removeCategoryUseCase.execute(id);
   }
 }
