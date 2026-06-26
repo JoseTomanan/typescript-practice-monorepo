@@ -1,15 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
+import { ZodValidationPipe } from '../../app.pipe';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { ProductsController } from './products.controller';
 import { ProductsModule } from '../products.module';
 
-// TODO: review — imports the whole ProductsModule rather than listing
-// the use cases + repository tokens as providers directly. Simpler, and
-// it exercises the real DI wiring (including ProductsModule ->
-// CategoriesModule), but it's a different testing strategy than the
-// plan called for, decided on my own.
 describe('ProductsController', () => {
   let controller: ProductsController;
   let app: INestApplication<App>;
@@ -21,6 +17,15 @@ describe('ProductsController', () => {
 
     controller = module.get<ProductsController>(ProductsController);
     app = module.createNestApplication();
+    // TODO: review — added because this test compiles a TestingModule from
+    // `ProductsModule` directly, not `AppModule`. Global pipes registered
+    // via `app.useGlobalPipes(...)` in main.ts only apply to apps actually
+    // bootstrapped from main.ts; this spec builds its own app instance from
+    // a different module tree, so without this line every `@Body()`/
+    // `@Param()` param here would go unvalidated regardless of what's
+    // registered in production. This mirrors NestJS's own documented e2e
+    // testing pattern for global pipes.
+    app.useGlobalPipes(new ZodValidationPipe());
     await app.init();
   });
 
