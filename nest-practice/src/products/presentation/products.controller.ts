@@ -1,5 +1,5 @@
 import {
-  Controller, Delete, Get, Param, Post, Put, Body, HttpStatus, HttpCode, ParseIntPipe, UseGuards,
+  Controller, Delete, Get, Param, Post, Put, Body, HttpStatus, HttpCode, UseGuards,
   Query,
   Patch
 } from '@nestjs/common';
@@ -9,13 +9,12 @@ import { CreateProductUseCase } from '../application/use-cases/create-product.us
 import { ReplaceProductUseCase } from '../application/use-cases/replace-product.use-case';
 import { UpdateProductUseCase } from '../application/use-cases/update-product.use-case';
 import { RemoveProductUseCase } from '../application/use-cases/remove-product.use-case';
-import { type CreateProductDto, CreateProductSchema } from './dto/create-product.dto';
-import { type ReplaceProductDto, ReplaceProductSchema } from './dto/replace-product.dto';
-import { type UpdateProductDto, UpdateProductSchema } from './dto/update-product.dto';
+import { CreateProductDto } from './dto/create-product.dto';
+import { ReplaceProductDto } from './dto/replace-product.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
+import { FindAllProductsQueryDto } from './dto/find-all-products-query.dto';
 import { ApiKeyGuard } from '../../app.guard';
 import { IdParamDto } from '../../app.params.dto';
-
-
 
 @Controller('products')
 export class ProductsController {
@@ -31,12 +30,7 @@ export class ProductsController {
   // GET /products
   @Get()
   findAll(
-    @Query('categoryId', new ParseIntPipe({ optional: true })) categoryId?: number,
-    @Query('page', new ParseIntPipe({ optional: true })) page?: number,
-    @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
-    @Query('search') search?: string,
-    @Query('minPrice', new ParseIntPipe({ optional: true })) minPrice?: number,
-    @Query('maxPrice', new ParseIntPipe({ optional: true })) maxPrice?: number,
+    @Query() { categoryId, page, limit, search, minPrice, maxPrice }: FindAllProductsQueryDto,
   ) {
     return this.findAllProductsUseCase.execute(categoryId, page, limit, search, minPrice, maxPrice);
   }
@@ -53,9 +47,7 @@ export class ProductsController {
   // POST /products
   @Post()
   @UseGuards(ApiKeyGuard)
-  create(
-    @Body(new ZodValidationPipe(CreateProductSchema)) createProductDto: CreateProductDto,
-  ) {
+  create(@Body() createProductDto: CreateProductDto) {
     return this.createProductUseCase.execute(createProductDto);
   }
 
@@ -66,7 +58,7 @@ export class ProductsController {
   @UseGuards(ApiKeyGuard)
   replace(
     @Param() { id }: IdParamDto,
-    @Body(new ZodValidationPipe(ReplaceProductSchema)) replaceProductDto: ReplaceProductDto,
+    @Body() replaceProductDto: ReplaceProductDto,
   ) {
     return this.replaceProductUseCase.execute(id, replaceProductDto);
   }
@@ -78,7 +70,7 @@ export class ProductsController {
   @UseGuards(ApiKeyGuard)
   updateExisting(
     @Param() { id }: IdParamDto,
-    @Body(new ZodValidationPipe(UpdateProductSchema)) updateProductDto: UpdateProductDto,
+    @Body() updateProductDto: UpdateProductDto,
   ) {
     return this.updateProductUseCase.execute(id, updateProductDto);
   }

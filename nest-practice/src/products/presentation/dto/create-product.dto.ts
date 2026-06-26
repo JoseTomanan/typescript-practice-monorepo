@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { createZodDto } from "nestjs-zod";
 
 export const CreateProductSchema = z.object({
   name: z.string()
@@ -10,4 +11,4 @@ export const CreateProductSchema = z.object({
   categoryId: z.number()
 });
 
-export type CreateProductDto = z.infer<typeof CreateProductSchema>;
+export class CreateProductDto extends createZodDto(CreateProductSchema) {}

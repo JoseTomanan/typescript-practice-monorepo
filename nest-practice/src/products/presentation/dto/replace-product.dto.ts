@@ -1,4 +1,6 @@
-import { CreateProductDto, CreateProductSchema } from "./create-product.dto";
+import { createZodDto } from "nestjs-zod";
+import { CreateProductSchema } from "./create-product.dto";
 
 export const ReplaceProductSchema = CreateProductSchema;
-export type ReplaceProductDto = CreateProductDto;
+
+export class ReplaceProductDto extends createZodDto(ReplaceProductSchema) {}

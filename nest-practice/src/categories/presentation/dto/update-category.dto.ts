@@ -1,4 +1,8 @@
+// TODO: review — see products/presentation/dto/create-product.dto.ts for
+// the full explanation of why `type UpdateCategoryDto` became
+// `class UpdateCategoryDto extends createZodDto(...)`.
 import { z } from "zod";
+import { createZodDto } from "nestjs-zod";
 
 export const UpdateCategorySchema = z.object({
   name: z.string()
@@ -6,4 +10,4 @@ export const UpdateCategorySchema = z.object({
     .max(255, { message: "Name must be at most 255 characters long" }),
 });
 
-export type UpdateCategoryDto = z.infer<typeof UpdateCategorySchema>;
+export class UpdateCategoryDto extends createZodDto(UpdateCategorySchema) {}
