@@ -28,12 +28,6 @@ export class CategoriesController {
   }
 
   // GET /categories/:id
-  // TODO: review — previously `@Param('id', ParseIntPipe) id: number`. The
-  // global ZodValidationPipe (see app.pipe.ts) now has
-  // `strictSchemaDeclaration: true`, which throws on any param whose type
-  // isn't a `createZodDto` class — `number` doesn't qualify, so this had to
-  // move to `{ id }: IdParamDto` (shared across products + categories, see
-  // app.params.dto.ts), destructuring the validated/coerced id back out.
   @Get(':id')
   findOne(@Param() { id }: IdParamDto) {
     return this.findOneCategoryUseCase.execute(id);
@@ -49,8 +43,6 @@ export class CategoriesController {
   }
 
   // PUT /categories/:id
-  // TODO: review — see findOne above for why this is `{ id }: IdParamDto`
-  // instead of `@Param('id', ParseIntPipe) id: number`.
   @Put(':id')
   @UseGuards(ApiKeyGuard)
   update(
@@ -61,8 +53,6 @@ export class CategoriesController {
   }
 
   // DELETE /categories/:id
-  // TODO: review — see findOne above for why this is `{ id }: IdParamDto`
-  // instead of `@Param('id', ParseIntPipe) id: number`.
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(ApiKeyGuard)

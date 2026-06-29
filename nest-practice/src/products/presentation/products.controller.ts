@@ -36,9 +36,6 @@ export class ProductsController {
   }
 
   // GET /products/:id
-  // TODO: review — previously `@Param('id', ParseIntPipe) id: number` (see
-  // app.params.dto.ts for why this changed). `{ id }: IdParamDto` destructures
-  // the single field straight out of the validated params object.
   @Get(':id')
   findOne(@Param() { id }: IdParamDto) {
     return this.findOneProductUseCase.execute(id);
@@ -52,8 +49,6 @@ export class ProductsController {
   }
 
   // PUT /products/:id
-  // TODO: review — see findOne above for why this is `{ id }: IdParamDto`
-  // instead of `@Param('id', ParseIntPipe) id: number`.
   @Put(':id')
   @UseGuards(ApiKeyGuard)
   replace(
@@ -64,8 +59,6 @@ export class ProductsController {
   }
 
   // PATCH /products/:id
-  // TODO: review — see findOne above for why this is `{ id }: IdParamDto`
-  // instead of `@Param('id', ParseIntPipe) id: number`.
   @Patch(':id')
   @UseGuards(ApiKeyGuard)
   updateExisting(
@@ -76,8 +69,6 @@ export class ProductsController {
   }
 
   // DELETE /products/:id
-  // TODO: review — see findOne above for why this is `{ id }: IdParamDto`
-  // instead of `@Param('id', ParseIntPipe) id: number`.
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(ApiKeyGuard)
