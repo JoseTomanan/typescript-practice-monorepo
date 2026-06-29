@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "declaration": true,
+    // "outDir": "dist",
+    // "baseUrl": ".",
+    "paths": {
+      "@dto": ["/libs/dto/src/index.ts"]
+    }
+  },
+  "include": ["libs/**/*.ts"]
+}
