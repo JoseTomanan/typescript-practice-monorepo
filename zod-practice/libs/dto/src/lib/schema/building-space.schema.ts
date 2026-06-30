@@ -1,0 +1,48 @@
+import { z } from 'zod';
+import { buildingSpacePlacement, buildingSource, opportunityMustHave } from '../enum/index.js';
+
+export const buildingSpaceSchema = z.object({
+  buildingSpaceId: z.string().optional(),
+  buildingId: z.string(),
+  buildingName: z.string().optional(),
+  spaceNumber: z.string().optional(),
+  name: z.string().optional(),
+  availability: z.string().optional(),
+  availableFrom: z.string().optional(),
+  termLength: z.number().optional(),
+  placement: buildingSpacePlacement.optional(),
+  floor: z.string().optional(),
+  floorplans: z.array(z.string()).optional(),
+  pcm: z.number().optional(),
+  calculatedPricePerMonth: z.number().optional(),
+  sqft: z.number().optional(),
+  pricePerFt: z.number().optional(),
+  calculatedPricePerFt: z.number().optional(),
+  numOfDesks: z.number().optional(),
+  pricePerDesk: z.number().optional(),
+  calculatedPricePerDesk: z.number().optional(),
+  description: z.string().optional(),
+  amenities: z.array(opportunityMustHave)
+    .default([]),
+  source: buildingSource.optional(),
+  leaseType: z.string().optional(),
+  externalId: z.string().optional(),
+  platformId: z.string().optional(),
+  spaceLocation: z.string().optional(),
+  operatorId: z.string().optional(),
+  operator: z.string().optional(),
+  address: z.string().optional(),
+  lat: z.number().optional(),
+  long: z.number().optional(),
+  amenitiesString: z.string().optional(),
+  numOfKitchens: z.number().optional(),
+  numOfMeetingRooms: z.number().optional(),
+  numOfBreakoutSpaces: z.number().optional(),
+  thumbnailImageId: z.string().optional(),
+  createdBy: z.string().optional(),
+  updatedBy: z.string().optional(),
+  created: z.string().optional(),
+  updated: z.string().optional(),
+});
+
+export type BuildingSpace = z.infer<typeof buildingSpaceSchema>;
