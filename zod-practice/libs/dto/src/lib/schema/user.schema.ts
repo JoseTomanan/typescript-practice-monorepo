@@ -13,7 +13,6 @@ export const userSchema = z.object({
   data: z
     .object({
       country: z.string().optional(),
-      birthdate: z.string().optional(),
     })
     .default({}),
 });
