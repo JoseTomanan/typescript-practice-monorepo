@@ -14,4 +14,14 @@ export default tseslint.config(
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
+  {
+    rules: {
+      // Leading-underscore params/vars are an intentional "unused for now"
+      // marker (e.g. TODO stubs awaiting an implementation).
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+      ],
+    },
+  },
 );

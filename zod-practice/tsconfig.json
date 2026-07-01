@@ -1,18 +1,25 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
+    "target": "ES2023",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "strict": true,
+    "strictNullChecks": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
-    // "outDir": "dist",
-    // "baseUrl": ".",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "allowSyntheticDefaultImports": true,
+    "resolvePackageJsonExports": true,
+    "sourceMap": true,
+    "incremental": true,
+    "outDir": "./dist",
+    // "baseUrl": "./",
     "paths": {
-      "@dto": ["/libs/dto/src/index.ts"]
+      "@dto": ["./libs/dto/src/index.ts"]
     }
   },
-  "include": ["libs/**/*.ts"]
+  "include": ["libs/**/*.ts", "src/**/*.ts"]
 }
