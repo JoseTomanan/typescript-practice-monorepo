@@ -3,6 +3,7 @@ import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import { BuildingService } from './building.service';
 import {
   CreateBuildingDto,
+  FindBuildingsQueryDto,
   UpdateBuildingDto,
   createBuildingSchema,
   findBuildingsQuerySchema,
@@ -15,34 +16,30 @@ export class BuildingController {
 
   @Get()
   @UsePipes(new ZodValidationPipe(findBuildingsQuerySchema))
-  findAll(@Query() _query: unknown) {
-    // TODO(you): call `this.buildingService.findAll(_query)`. The pipe above
-    // already validated/parsed the query string into a FindBuildingsQueryDto,
-    // so `_query` here is safe to pass straight through.
-    throw new Error('BuildingController.findAll() not implemented yet');
+  findAll(@Query() query: FindBuildingsQueryDto) {
+    // The pipe already validated/parsed the query; findAll returns the full
+    // { data, total } envelope, so pass it straight through.
+    return this.buildingService.findAll(query);
   }
 
   @Get(':id')
-  findOne(@Param('id') _id: string) {
-    // TODO(you): call `this.buildingService.findOne(_id)` and wrap the result
-    // in the required `{ data }` envelope.
-    throw new Error('BuildingController.findOne() not implemented yet');
+  findOne(@Param('id') id: string) {
+    return { data: this.buildingService.findOne(id) };
   }
 
   @Post()
-  @UsePipes(new ZodValidationPipe(createBuildingSchema))
-  create(@Body() _dto: CreateBuildingDto) {
-    // TODO(you): call `this.buildingService.create(_dto)` and wrap the result
-    // in `{ data }`. NestJS returns HTTP 201 for POST by default — no extra
-    // work needed for the status code.
-    throw new Error('BuildingController.create() not implemented yet');
+  create(@Body(new ZodValidationPipe(createBuildingSchema)) dto: CreateBuildingDto) {
+    // NestJS returns HTTP 201 for POST by default.
+    return { data: this.buildingService.create(dto) };
   }
 
   @Put(':id')
-  @UsePipes(new ZodValidationPipe(updateBuildingSchema))
-  update(@Param('id') _id: string, @Body() _dto: UpdateBuildingDto) {
-    // TODO(you): call `this.buildingService.update(_id, _dto)` and wrap the
-    // result in `{ data }`.
-    throw new Error('BuildingController.update() not implemented yet');
+  update(
+    @Param('id') id: string,
+    @Body(new ZodValidationPipe(updateBuildingSchema)) dto: UpdateBuildingDto,
+  ) {
+    // Bind the pipe to @Body only — a method-level pipe would also try to
+    // validate the `id` string against the object schema and 400 every request.
+    return { data: this.buildingService.update(id, dto) };
   }
 }
