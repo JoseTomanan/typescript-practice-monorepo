@@ -1,4 +1,4 @@
-import { ArgumentMetadata, PipeTransform } from '@nestjs/common';
+import { ArgumentMetadata, BadRequestException, PipeTransform } from '@nestjs/common';
 import { ZodSchema } from 'zod';
 
 /**
@@ -12,19 +12,25 @@ import { ZodSchema } from 'zod';
 export class ZodValidationPipe implements PipeTransform {
   constructor(private readonly schema: ZodSchema) {}
 
-  transform(_value: unknown, _metadata: ArgumentMetadata) {
-    // TODO(you): validate `_value` against `this.schema`.
-    //
-    // Design choices to make:
-    // - Zod's `.safeParse()` lets you inspect success/failure without a try/catch;
-    //   `.parse()` throws a ZodError directly. Either is fine — pick one and be consistent.
-    // - On failure, throw a `BadRequestException` (import it from '@nestjs/common';
-    //   maps to HTTP 400).
-    //   Decide how much of the ZodError to surface in the response body — the full
-    //   `error.issues` array (path + message per field) is the most useful for API
-    //   consumers, but you may want to reshape it rather than dump Zod's raw format.
-    // - On success, return the *parsed* value (not the original `value`) so that
-    //   Zod defaults (e.g. `amenities` defaulting to `[]`) are applied downstream.
-    throw new Error('ZodValidationPipe.transform() not implemented yet');
+  transform(value: unknown, _metadata: ArgumentMetadata) {
+    // safeParse over parse: it lets us inspect the failure and reshape it into a
+    // clean 400 body rather than leaking a raw thrown ZodError.
+    const result = this.schema.safeParse(value);
+
+    if (!result.success) {
+      // Surface each issue as { path, message } — enough for a consumer to fix
+      // the request, without dumping Zod's full internal issue format.
+      throw new BadRequestException({
+        message: 'Validation failed',
+        errors: result.error.issues.map((issue) => ({
+          path: issue.path.join('.'),
+          message: issue.message,
+        })),
+      });
+    }
+
+    // Return the *parsed* value so Zod defaults (e.g. amenities -> []) are applied
+    // before the handler/service runs.
+    return result.data;
   }
 }
