@@ -1,3 +1,25 @@
 node_modules/
 
+# compiled output
+dist/
+tmp/
+out-tsc/
+
+# Nx cache and local workspace metadata
+.nx/cache
+.nx/workspace-data
+
+# test coverage
+coverage/
+
+# logs
+*.log
+
+# environment files
+.env
+.env.local
+
+# OS files
+.DS_Store
+Thumbs.db
 
