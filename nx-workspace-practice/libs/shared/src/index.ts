@@ -1,1 +1,3 @@
-export * from './lib/shared';
+export interface Message {
+  message: string;
+}
