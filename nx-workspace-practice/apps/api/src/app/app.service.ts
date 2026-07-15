@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { Message } from 'shared';
 
 @Injectable()
 export class AppService {
-  getData(): { message: string } {
-    return ({ message: 'Hello API' });
+  getData(): Message {
+    return ({ message: 'Hello Ireland Baby!' });
   }
 }
