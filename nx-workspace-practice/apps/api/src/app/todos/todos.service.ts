@@ -17,9 +17,6 @@ export class TodosService {
     list: [],
   });
 
-  /** Tracks the next todo identifier to assign. */
-  private nextId = 1;
-
   /** Returns the complete todo list. */
   getTodos() {
     return this.todoList;
@@ -108,7 +105,7 @@ export class TodosService {
     const newStatus = this.buildStatus(statusValue);
 
     return {
-      id: existingTodo?.id ?? this.nextId++,
+      id: existingTodo?.id ?? this.getNextId(),
       title: todoDto.title ?? existingTodo?.title ?? '',
       description: todoDto.description ?? existingTodo?.description,
       deadline: todoDto.deadline ?? existingTodo?.deadline,
@@ -127,5 +124,14 @@ export class TodosService {
     }
 
     return { status: status.status };
+  }
+
+  /** Derives the next todo identifier from the current list of IDs. */
+  private getNextId(): number {
+    const highestId = this.todoList.list.reduce((maxId, todo) => {
+      return Math.max(maxId, todo.id);
+    }, 0);
+
+    return highestId + 1;
   }
 }
