@@ -15,7 +15,7 @@ interface StatusDone extends BaseStatus {
   dateFinished?: Date;
 }
 
-type TodoStatus = StatusTodo | StatusInProgress | StatusDone;
+export type TodoStatus = StatusTodo | StatusInProgress | StatusDone;
 
 export interface TodoItem {
   id?: number;
