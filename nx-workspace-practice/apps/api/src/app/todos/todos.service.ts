@@ -17,17 +17,26 @@ export class TodosService {
     list: [],
   });
 
-  /** Returns the complete todo list. */
+  /**
+   * GET /todos
+   * Returns the complete todo list.
+   */
   getTodos() {
     return this.todoList;
   }
 
-  /** Finds a single todo by identifier. */
+  /**
+   * GET /todos/:id
+   * Finds a single todo by identifier.
+   */
   getTodo(id: number): TodoItem {
     return this.findTodo(id);
   }
 
-  /** Builds and stores a new todo item. */
+  /**
+   * POST /todos
+   * Builds and stores a new todo item.
+   */
   createTodo(createTodoDto: CreateTodoDto): TodoItem {
     const todo = this.buildTodo(createTodoDto);
     this.todoList.list.push(todo);
@@ -35,7 +44,10 @@ export class TodosService {
     return todo;
   }
 
-  /** Updates an existing todo while preserving its identifier. */
+  /**
+   * PATCH /todos/:id
+   * Updates an existing todo while preserving its identifier.
+   */
   updateTodo(id: number, updateTodoDto: UpdateTodoDto): TodoItem {
     const todo = this.findTodo(id);
     const updatedTodo = {
@@ -49,7 +61,10 @@ export class TodosService {
     return updatedTodo;
   }
 
-  /** Updates only the status for an existing todo. */
+  /**
+   * PATCH /todos/:id/status
+   * Updates only the status for an existing todo.
+   */
   updateTodoStatus(id: number, dto: UpdateTodoStatusDto): TodoItem {
     const todo = this.findTodo(id);
     const updatedTodo = {
@@ -62,7 +77,10 @@ export class TodosService {
     return updatedTodo;
   }
 
-  /** Removes a todo from the list and reports success. */
+  /**
+   * DELETE /todos/:id
+   * Removes a todo from the list and reports success.
+   */
   deleteTodo(id: number) {
     const todoIndex = this.todoList.list.findIndex((todo) => todo.id === id);
 
