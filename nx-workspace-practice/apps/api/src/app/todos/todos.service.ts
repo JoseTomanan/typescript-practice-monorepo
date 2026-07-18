@@ -10,22 +10,27 @@ import {
 
 @Injectable()
 export class TodosService {
+  /** Stores the in-memory todo list returned by the API. */
   private readonly todoList = new TodoList({
     id: 1,
     name: 'Default todo list',
     list: [],
   });
 
+  /** Tracks the next todo identifier to assign. */
   private nextId = 1;
 
+  /** Returns the complete todo list. */
   getTodos() {
     return this.todoList;
   }
 
+  /** Finds a single todo by identifier. */
   getTodo(id: number): TodoItem {
     return this.findTodo(id);
   }
 
+  /** Builds and stores a new todo item. */
   createTodo(createTodoDto: CreateTodoDto): TodoItem {
     const todo = this.buildTodo(createTodoDto);
     this.todoList.list.push(todo);
@@ -33,6 +38,7 @@ export class TodosService {
     return todo;
   }
 
+  /** Updates an existing todo while preserving its identifier. */
   updateTodo(id: number, updateTodoDto: UpdateTodoDto): TodoItem {
     const todo = this.findTodo(id);
     const updatedTodo = {
@@ -46,6 +52,7 @@ export class TodosService {
     return updatedTodo;
   }
 
+  /** Updates only the status for an existing todo. */
   updateTodoStatus(id: number, dto: UpdateTodoStatusDto): TodoItem {
     const todo = this.findTodo(id);
     const updatedTodo = {
@@ -58,6 +65,7 @@ export class TodosService {
     return updatedTodo;
   }
 
+  /** Removes a todo from the list and reports success. */
   deleteTodo(id: number) {
     const todoIndex = this.todoList.list.findIndex((todo) => todo.id === id);
 
@@ -69,6 +77,7 @@ export class TodosService {
     return { deleted: true };
   }
 
+  /** Looks up a todo or throws when it does not exist. */
   private findTodo(id: number): TodoItem {
     const todo = this.todoList.list.find((item) => item.id === id);
 
@@ -78,6 +87,7 @@ export class TodosService {
     return todo;
   }
 
+  /** Replaces an existing todo at the same list position. */
   private replaceTodo(id: number, todo: TodoItem) {
     const todoIndex = this.todoList.list.findIndex((item) => item.id === id);
 
@@ -88,11 +98,15 @@ export class TodosService {
     this.todoList.list.splice(todoIndex, 1, todo);
   }
 
-  private buildTodo(todoDto: CreateTodoDto | UpdateTodoDto, existingTodo?: TodoItem,): TodoItem {
+  /** Creates a todo payload from request data and optional existing state. */
+  private buildTodo(
+    todoDto: CreateTodoDto | UpdateTodoDto,
+    existingTodo?: TodoItem,
+  ): TodoItem {
     const statusValue: TodoStatus = todoDto.status ?? existingTodo?.status ?? { status: 'todo' };
 
     const newStatus = this.buildStatus(statusValue);
-    
+
     return {
       id: existingTodo?.id ?? this.nextId++,
       title: todoDto.title ?? existingTodo?.title ?? '',
@@ -103,6 +117,7 @@ export class TodosService {
     };
   }
 
+  /** Normalizes todo status and stamps completion time for done items. */
   private buildStatus(status: TodoStatus): TodoItem['status'] {
     if (status.status === 'done') {
       return {
