@@ -1,3 +1,5 @@
+import { TodoStatus } from "../types/TodoItem";
+
 export interface UpdateTodoStatusDto {
-  status: 'todo' | 'in-progress' | 'done';
+  status: TodoStatus;
 }
