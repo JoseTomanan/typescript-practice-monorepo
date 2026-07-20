@@ -1,4 +1,6 @@
-import { CreateTodoDto } from './CreateTodoDto';
+import { z } from 'zod';
+import { CreateTodoSchema } from './CreateTodoDto';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type, @typescript-eslint/no-empty-interface
-export interface UpdateTodoDto extends Partial<CreateTodoDto> {}
+export const UpdateTodoSchema = CreateTodoSchema.partial();
+
+export type UpdateTodoDto = z.infer<typeof UpdateTodoSchema>;

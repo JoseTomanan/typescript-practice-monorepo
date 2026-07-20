@@ -1,21 +1,16 @@
-interface BaseStatus {
-  id?: number;
-}
+import { z } from 'zod';
 
-interface StatusTodo extends BaseStatus {
-  status: 'todo';
-}
+export const TodoStatusSchema = z.discriminatedUnion('status', [
+  z.object({ status: z.literal('todo'), id: z.number().optional() }),
+  z.object({ status: z.literal('in-progress'), id: z.number().optional() }),
+  z.object({
+    status: z.literal('done'),
+    id: z.number().optional(),
+    dateFinished: z.coerce.date().optional(),
+  }),
+]);
 
-interface StatusInProgress extends BaseStatus {
-  status: 'in-progress';
-}
-
-interface StatusDone extends BaseStatus {
-  status: 'done';
-  dateFinished?: Date;
-}
-
-export type TodoStatus = StatusTodo | StatusInProgress | StatusDone;
+export type TodoStatus = z.infer<typeof TodoStatusSchema>;
 
 export interface TodoItem {
   id?: number;

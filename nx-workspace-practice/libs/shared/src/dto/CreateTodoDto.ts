@@ -1,8 +1,11 @@
-import { TodoStatus } from '../types/TodoItem';
+import { z } from 'zod';
+import { TodoStatusSchema } from '../types/TodoItem';
 
-export interface CreateTodoDto {
-  title: string;
-  description?: string;
-  deadline?: Date;
-  status?: TodoStatus;
-}
+export const CreateTodoSchema = z.object({
+  title: z.string().min(1, 'title is required'),
+  description: z.string().optional(),
+  deadline: z.coerce.date().optional(),
+  status: TodoStatusSchema.optional(),
+});
+
+export type CreateTodoDto = z.infer<typeof CreateTodoSchema>;

@@ -1,5 +1,8 @@
-import { TodoStatus } from "../types/TodoItem";
+import { z } from 'zod';
+import { TodoStatusSchema } from '../types/TodoItem';
 
-export interface UpdateTodoStatusDto {
-  status: TodoStatus;
-}
+export const UpdateTodoStatusSchema = z.object({
+  status: TodoStatusSchema,
+});
+
+export type UpdateTodoStatusDto = z.infer<typeof UpdateTodoStatusSchema>;
