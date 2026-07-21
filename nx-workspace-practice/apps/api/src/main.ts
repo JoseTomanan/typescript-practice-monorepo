@@ -29,10 +29,15 @@ async function bootstrap() {
   // The web app (:3001) calls this API (:3000) from the browser, so the
   // browser blocks those cross-origin requests unless CORS is enabled here.
   // Without this, every client-side mutation (add/edit/status/delete) fails.
-  // TODO(policy): decide how open this should be. `app.enableCors()` allows
-  // any origin (convenient for local dev); restrict it for anything shared,
-  // e.g. `app.enableCors({ origin: 'http://localhost:3001' })`.
-  app.enableCors();
+  //
+  // These mutation endpoints are unauthenticated, so a bare `enableCors()`
+  // (any origin) would let any website drive them from a victim's browser.
+  // Restrict to the trusted web-app origin instead; override via WEB_ORIGIN
+  // when the app is served from somewhere other than local dev.
+  app.enableCors({
+    origin: process.env.WEB_ORIGIN ?? 'http://localhost:3001',
+    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+  });
   const port = process.env.PORT || 3000;
   await app.listen(port);
   Logger.log(`🚀 Application is running on: http://localhost:${port}/${globalPrefix}`);
