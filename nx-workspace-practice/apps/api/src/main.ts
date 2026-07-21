@@ -25,6 +25,14 @@ async function bootstrap() {
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
   app.useGlobalPipes(new ZodValidationPipe());
+
+  // The web app (:3001) calls this API (:3000) from the browser, so the
+  // browser blocks those cross-origin requests unless CORS is enabled here.
+  // Without this, every client-side mutation (add/edit/status/delete) fails.
+  // TODO(policy): decide how open this should be. `app.enableCors()` allows
+  // any origin (convenient for local dev); restrict it for anything shared,
+  // e.g. `app.enableCors({ origin: 'http://localhost:3001' })`.
+  app.enableCors();
   const port = process.env.PORT || 3000;
   await app.listen(port);
   Logger.log(`🚀 Application is running on: http://localhost:${port}/${globalPrefix}`);
