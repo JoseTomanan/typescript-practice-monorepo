@@ -6,5 +6,15 @@
   "tags": [],
   "implicitDependencies": ["web"],
   "// targets": "to see all targets run: nx show project web-e2e --web",
-  "targets": {}
+  "targets": {
+    "e2e": {
+      "executor": "@nx/playwright:playwright",
+      "outputs": ["{workspaceRoot}/dist/.playwright/apps/web-e2e"],
+      "options": {
+        "config": "apps/web-e2e/playwright.config.mts"
+      },
+      "// dependsOn": "Empty so Nx never starts servers; Playwright's webServer (reuseExistingServer) attaches to running ones or starts them itself.",
+      "dependsOn": []
+    }
+  }
 }
