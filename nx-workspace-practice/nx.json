@@ -39,6 +39,7 @@
     },
     {
       "plugin": "@nx/jest/plugin",
+      "exclude": ["apps/api-e2e/**"],
       "options": {
         "targetName": "test"
       }
