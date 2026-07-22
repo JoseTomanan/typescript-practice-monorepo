@@ -1,8 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import fetchApi from 'shared';
-import { TodoItem, TodoStatus } from 'shared';
+import {
+  createTodo,
+  deleteTodo,
+  TodoItem,
+  TodoStatus,
+  updateTodoField,
+  updateTodoStatus,
+} from 'shared';
 import type { TodoTableProps } from 'shared';
 
 const STATUS_VALUES: TodoStatus['status'][] = ['todo', 'in-progress', 'done'];
@@ -17,37 +23,25 @@ export default function TodoTable({ initialList }: TodoTableProps) {
   }
 
   async function patchField(id: number | undefined, patch: Record<string, unknown>) {
-    if (id === undefined) return;
-    const updated = await fetchApi<TodoItem>(`todos/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(patch),
-    });
+    const updated = await updateTodoField(id, patch);
+    if (!updated) return;
     mergeItem(updated);
   }
 
   async function handleStatusChange(item: TodoItem, newStatus: TodoStatus['status']) {
-    const updated = await fetchApi<TodoItem>(`todos/${item.id}/status`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status: { status: newStatus } }),
-    });
-
+    const updated = await updateTodoStatus(item.id, newStatus);
+    if (!updated) return;
     mergeItem(updated);
   }
 
   async function handleDelete(id: number | undefined) {
-    if (id === undefined) return;
-    await fetchApi<{ deleted: true }>(`todos/${id}`, { method: 'DELETE' });
+    const deleted = await deleteTodo(id);
+    if (!deleted || id === undefined) return;
     setItems((prev) => prev.filter((item) => item.id !== id));
   }
 
   async function handleAdd() {
-    const created = await fetchApi<TodoItem>('todos', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title: 'Untitled' }),
-    });
+    const created = await createTodo();
     setItems((prev) => [...prev, created]);
   }
 

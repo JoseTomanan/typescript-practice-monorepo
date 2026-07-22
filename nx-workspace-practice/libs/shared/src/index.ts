@@ -6,3 +6,4 @@ export * from './dto/UpdateTodoDto';
 export * from './dto/UpdateTodoStatusDto';
 
 export { default } from './utils/FetchAPI';
+export * from './utils/TodoAPI';
