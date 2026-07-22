@@ -1,4 +1,3 @@
-import { NotFoundException } from '@nestjs/common';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import {
   DeleteCommand,
@@ -10,6 +9,7 @@ import {
 } from '@aws-sdk/lib-dynamodb';
 import { mockClient } from 'aws-sdk-client-mock';
 import { TodosService } from './todos.service';
+import { TodoNotFoundError } from './exceptions/todo-not-found.error';
 
 // Intercepts every `.send()` call made through any DynamoDBDocumentClient
 // instance, so tests never touch a real DynamoDB (Local or otherwise).
@@ -87,10 +87,10 @@ describe('TodosService', () => {
       expect(todo.title).toBe('Existing');
     });
 
-    it('throws NotFoundException for an unknown id', async () => {
+    it('throws TodoNotFoundError for an unknown id', async () => {
       ddbMock.on(GetCommand).resolves({});
 
-      await expect(service.getTodo(999)).rejects.toThrow(NotFoundException);
+      await expect(service.getTodo(999)).rejects.toThrow(TodoNotFoundError);
     });
   });
 
@@ -109,10 +109,10 @@ describe('TodosService', () => {
       expect(updated.description).toBe('desc');
     });
 
-    it('throws NotFoundException for an unknown id', async () => {
+    it('throws TodoNotFoundError for an unknown id', async () => {
       ddbMock.on(GetCommand).resolves({});
 
-      await expect(service.updateTodo(999, { title: 'X' })).rejects.toThrow(NotFoundException);
+      await expect(service.updateTodo(999, { title: 'X' })).rejects.toThrow(TodoNotFoundError);
     });
   });
 
@@ -148,10 +148,10 @@ describe('TodosService', () => {
       await expect(service.deleteTodo(1)).resolves.toEqual({ deleted: true });
     });
 
-    it('throws NotFoundException for an unknown id', async () => {
+    it('throws TodoNotFoundError for an unknown id', async () => {
       ddbMock.on(DeleteCommand).resolves({});
 
-      await expect(service.deleteTodo(999)).rejects.toThrow(NotFoundException);
+      await expect(service.deleteTodo(999)).rejects.toThrow(TodoNotFoundError);
     });
   });
 });

@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import {
   DeleteCommand,
   DynamoDBDocumentClient,
@@ -14,6 +14,8 @@ import {
   CreateTodoDto,
   UpdateTodoDto,
   UpdateTodoStatusDto,
+  buildTodo,
+  buildStatus,
 } from 'shared';
 import {
   COUNTER_SK,
@@ -22,6 +24,7 @@ import {
   TODO_LIST_PK,
   todoSortKey,
 } from './todos.constants';
+import { TodoNotFoundError } from './exceptions/todo-not-found.error';
 
 @Injectable()
 export class TodosService {
@@ -61,7 +64,7 @@ export class TodosService {
    */
   async createTodo(createTodoDto: CreateTodoDto): Promise<TodoItem> {
     const id = await this.nextId();
-    const todo = this.buildTodo(createTodoDto, undefined, id);
+    const todo = buildTodo(createTodoDto, undefined, new Date(), id);
 
     await this.docClient.send(
       new PutCommand({ TableName: TODOS_TABLE_NAME, Item: this.toItem(todo) }),
@@ -78,7 +81,7 @@ export class TodosService {
     const todo = await this.findTodo(id);
     const updatedTodo = {
       ...todo,
-      ...this.buildTodo(updateTodoDto, todo),
+      ...buildTodo(updateTodoDto, todo, new Date()),
       id: todo.id,
     };
 
@@ -97,7 +100,7 @@ export class TodosService {
     const todo = await this.findTodo(id);
     const updatedTodo = {
       ...todo,
-      status: this.buildStatus(dto.status),
+      status: buildStatus(dto.status, new Date()),
     };
 
     await this.docClient.send(
@@ -120,7 +123,7 @@ export class TodosService {
       }),
     );
 
-    if (!result.Attributes) throw new NotFoundException(`Todo ${id} not found`);
+    if (!result.Attributes) throw new TodoNotFoundError(id);
 
     return { deleted: true };
   }
@@ -134,7 +137,7 @@ export class TodosService {
       }),
     );
 
-    if (!result.Item) throw new NotFoundException(`Todo ${id} not found`);
+    if (!result.Item) throw new TodoNotFoundError(id);
 
     return this.fromItem(result.Item);
   }
@@ -156,38 +159,6 @@ export class TodosService {
     );
 
     return result.Attributes?.currentId as number;
-  }
-
-  /** Creates a todo payload from request data and optional existing state. */
-  private buildTodo(
-    todoDto: CreateTodoDto | UpdateTodoDto,
-    existingTodo?: TodoItem,
-    newId?: number,
-  ): TodoItem {
-    const statusValue: TodoStatus = todoDto.status ?? existingTodo?.status ?? { status: 'todo' };
-
-    const newStatus = this.buildStatus(statusValue);
-
-    return {
-      id: existingTodo?.id ?? newId,
-      title: todoDto.title ?? existingTodo?.title ?? '',
-      description: todoDto.description ?? existingTodo?.description,
-      deadline: todoDto.deadline ?? existingTodo?.deadline,
-      dateCreated: existingTodo?.dateCreated ?? new Date(),
-      status: newStatus,
-    };
-  }
-
-  /** Normalizes todo status and stamps completion time for done items. */
-  private buildStatus(status: TodoStatus): TodoItem['status'] {
-    if (status.status === 'done') {
-      return {
-        status: status.status,
-        dateFinished: new Date(),
-      };
-    }
-
-    return { status: status.status };
   }
 
   /** Converts a TodoItem into the shape stored in DynamoDB (dates as ISO strings). */
