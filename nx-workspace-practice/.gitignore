@@ -27,3 +27,6 @@ Thumbs.db
 # Next.js
 .next
 out
+
+# DynamoDB Local runtime data
+docker/dynamodb/
