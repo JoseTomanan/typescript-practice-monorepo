@@ -1,18 +1,13 @@
-import { z } from 'zod';
+import type { TodoStatusValue } from './constants/TodoStatusValues';
 
-// FIXME: this doesnt belong here
-// go to /presentation
-export const TodoStatusSchema = z.discriminatedUnion('status', [
-  z.object({ status: z.literal('todo'), id: z.number().optional() }),
-  z.object({ status: z.literal('in-progress'), id: z.number().optional() }),
-  z.object({
-    status: z.literal('done'),
-    id: z.number().optional(),
-    dateFinished: z.coerce.date().optional(),
-  }),
-]);
-
-export type TodoStatus = z.infer<typeof TodoStatusSchema>;
+// Pure, Zod-free domain type. The `TodoStatusSchema` in api-contracts
+// derives its literals from `STATUS_VALUES` and is checked against this
+// type (see api-contracts/TodoStatusSchema.ts) so the two stay in sync
+// without domain depending on the validation layer.
+export type TodoStatus =
+  | { status: Extract<TodoStatusValue, 'todo'> }
+  | { status: Extract<TodoStatusValue, 'in-progress'> }
+  | { status: Extract<TodoStatusValue, 'done'>; dateFinished?: Date };
 
 export interface TodoItem {
   id?: number;

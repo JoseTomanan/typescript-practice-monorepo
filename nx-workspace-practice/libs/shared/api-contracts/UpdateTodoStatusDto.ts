@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { TodoStatusSchema } from '../domain/TodoItem';
+import { TodoStatusSchema } from './TodoStatusSchema';
 
 export const UpdateTodoStatusSchema = z.object({
   status: TodoStatusSchema,
