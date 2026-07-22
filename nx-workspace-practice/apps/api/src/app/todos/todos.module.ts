@@ -7,13 +7,10 @@ import {
 import { DynamoDBDocumentClient, PutCommand, QueryCommand } from '@aws-sdk/lib-dynamodb';
 import { TodosController } from './todos.controller';
 import { TodosService } from './todos.service';
-import {
-  COUNTER_SK,
-  DYNAMODB_CLIENT,
-  TODOS_TABLE_NAME,
-  TODO_LIST_PK,
-  todoSortKey,
-} from './todos.constants';
+import { DYNAMODB_CLIENT } from './todos.constants';
+import { COUNTER_SK, TODOS_TABLE_NAME, TODO_LIST_PK, todoSortKey } from './infrastructure/todos.keys';
+import { ITodosRepository } from './application/todos.repository';
+import { DynamoTodosRepository } from './infrastructure/repositories/dynamo-todos.repository';
 
 /** The same seed data TodosService used to hold in memory. */
 const SEED_TODOS = [
@@ -72,7 +69,11 @@ const documentClientFactory = {
 @Global()
 @Module({
   controllers: [TodosController],
-  providers: [documentClientFactory, TodosService],
+  providers: [
+    documentClientFactory,
+    { provide: ITodosRepository, useClass: DynamoTodosRepository },
+    TodosService,
+  ],
   exports: [DYNAMODB_CLIENT],
 })
 export class TodosModule implements OnModuleInit {
@@ -155,7 +156,7 @@ export class TodosModule implements OnModuleInit {
         new PutCommand({
           TableName: TODOS_TABLE_NAME,
           // DynamoDB can't marshall JS Date objects directly — store ISO
-          // strings, same as TodosService.toItem() does for writes at runtime.
+          // strings, same as DynamoTodosRepository's toItem() does for writes at runtime.
           Item: {
             pk: TODO_LIST_PK,
             sk: todoSortKey(todo.id),
