@@ -78,8 +78,37 @@ export class DynamoDbModule implements OnModuleInit {
   constructor(@Inject(DYNAMODB_CLIENT) private readonly docClient: DynamoDBDocumentClient) {}
 
   async onModuleInit() {
-    await this.ensureTableExists();
-    await this.seedIfEmpty();
+    try {
+      await this.ensureTableExists();
+      await this.seedIfEmpty();
+    } catch (error) {
+      const bootstrapError = this.toBootstrapError(error);
+
+      if (bootstrapError) throw bootstrapError;
+
+      throw error;
+    }
+  }
+
+  private toBootstrapError(error: unknown): Error | null {
+    if (!(error instanceof Error)) return null;
+
+    if (
+      error.name === 'AggregateError' ||
+      /econnrefused|fetch failed/i.test(error.message)
+    ) {
+      const endpoint = process.env.DYNAMODB_ENDPOINT ?? 'http://localhost:8000';
+
+      const bootstrapError = new Error(
+        `Cannot reach DynamoDB Local at ${endpoint}. Start it with "docker compose up -d dynamodb-local" or set DYNAMODB_ENDPOINT to a reachable endpoint.`,
+      );
+
+      (bootstrapError as Error & { cause?: Error }).cause = error;
+
+      return bootstrapError;
+    }
+
+    return null;
   }
 
   private async ensureTableExists() {
