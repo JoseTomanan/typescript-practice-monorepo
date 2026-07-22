@@ -1,4 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  DeleteCommand,
+  DynamoDBDocumentClient,
+  GetCommand,
+  PutCommand,
+  QueryCommand,
+  UpdateCommand,
+} from '@aws-sdk/lib-dynamodb';
 import {
   TodoItem,
   TodoList,
@@ -7,59 +15,43 @@ import {
   UpdateTodoDto,
   UpdateTodoStatusDto,
 } from 'shared';
+import {
+  COUNTER_SK,
+  DYNAMODB_CLIENT,
+  TODOS_TABLE_NAME,
+  TODO_LIST_PK,
+  todoSortKey,
+} from '../dynamodb/dynamodb.constants';
 
 @Injectable()
 export class TodosService {
-  /** Stores the in-memory todo list returned by the API. */
-  private readonly todoList = new TodoList({
-    id: 1,
-    name: 'Default todo list',
-    list: [
-      {
-        id: 1,
-        title: 'Teach the office plant to file its own expense reports',
-        description: 'It keeps submitting receipts for sunlight.',
-        status: { status: 'in-progress' },
-        dateCreated: new Date('2026-07-01'),
-        deadline: new Date('2026-08-15'),
-      },
-      {
-        id: 2,
-        title: 'Negotiate a ceasefire between the printer and the stapler',
-        description: 'Tensions escalated after the Great Paper Jam of Tuesday.',
-        status: { status: 'todo' },
-        dateCreated: new Date('2026-07-05'),
-        deadline: new Date('2026-07-31'),
-      },
-      {
-        id: 3,
-        title: 'Alphabetize the ocean',
-        status: { status: 'todo' },
-        dateCreated: new Date('2026-07-10'),
-      },
-      {
-        id: 4,
-        title: 'Return the borrowed thunderstorm to the neighbors',
-        description: 'They noticed. It was raining indoors again.',
-        status: { status: 'done', dateFinished: new Date('2026-07-18') },
-        dateCreated: new Date('2026-06-20'),
-      },
-    ],
-  });
+  constructor(@Inject(DYNAMODB_CLIENT) private readonly docClient: DynamoDBDocumentClient) {}
 
   /**
    * GET /todos
    * Returns the complete todo list.
    */
-  getTodos() {
-    return this.todoList;
+  async getTodos(): Promise<TodoList> {
+    const result = await this.docClient.send(
+      new QueryCommand({
+        TableName: TODOS_TABLE_NAME,
+        KeyConditionExpression: 'pk = :pk AND begins_with(sk, :prefix)',
+        ExpressionAttributeValues: { ':pk': TODO_LIST_PK, ':prefix': 'TODO#' },
+      }),
+    );
+
+    const list = (result.Items ?? [])
+      .map((item) => this.fromItem(item))
+      .sort((a, b) => (a.id as number) - (b.id as number));
+
+    return new TodoList({ id: 1, name: 'Default todo list', list });
   }
 
   /**
    * GET /todos/:id
    * Finds a single todo by identifier.
    */
-  getTodo(id: number): TodoItem {
+  async getTodo(id: number): Promise<TodoItem> {
     return this.findTodo(id);
   }
 
@@ -67,9 +59,13 @@ export class TodosService {
    * POST /todos
    * Builds and stores a new todo item.
    */
-  createTodo(createTodoDto: CreateTodoDto): TodoItem {
-    const todo = this.buildTodo(createTodoDto);
-    this.todoList.list.push(todo);
+  async createTodo(createTodoDto: CreateTodoDto): Promise<TodoItem> {
+    const id = await this.nextId();
+    const todo = this.buildTodo(createTodoDto, undefined, id);
+
+    await this.docClient.send(
+      new PutCommand({ TableName: TODOS_TABLE_NAME, Item: this.toItem(todo) }),
+    );
 
     return todo;
   }
@@ -78,15 +74,17 @@ export class TodosService {
    * PATCH /todos/:id
    * Updates an existing todo while preserving its identifier.
    */
-  updateTodo(id: number, updateTodoDto: UpdateTodoDto): TodoItem {
-    const todo = this.findTodo(id);
+  async updateTodo(id: number, updateTodoDto: UpdateTodoDto): Promise<TodoItem> {
+    const todo = await this.findTodo(id);
     const updatedTodo = {
       ...todo,
       ...this.buildTodo(updateTodoDto, todo),
       id: todo.id,
     };
 
-    this.replaceTodo(id, updatedTodo);
+    await this.docClient.send(
+      new PutCommand({ TableName: TODOS_TABLE_NAME, Item: this.toItem(updatedTodo) }),
+    );
 
     return updatedTodo;
   }
@@ -95,65 +93,83 @@ export class TodosService {
    * PATCH /todos/:id/status
    * Updates only the status for an existing todo.
    */
-  updateTodoStatus(id: number, dto: UpdateTodoStatusDto): TodoItem {
-    const todo = this.findTodo(id);
+  async updateTodoStatus(id: number, dto: UpdateTodoStatusDto): Promise<TodoItem> {
+    const todo = await this.findTodo(id);
     const updatedTodo = {
       ...todo,
       status: this.buildStatus(dto.status),
     };
 
-    this.replaceTodo(id, updatedTodo);
+    await this.docClient.send(
+      new PutCommand({ TableName: TODOS_TABLE_NAME, Item: this.toItem(updatedTodo) }),
+    );
 
     return updatedTodo;
   }
 
   /**
    * DELETE /todos/:id
-   * Removes a todo from the list and reports success.
+   * Removes a todo from the table and reports success.
    */
-  deleteTodo(id: number) {
-    const todoIndex = this.todoList.list.findIndex((todo) => todo.id === id);
+  async deleteTodo(id: number) {
+    const result = await this.docClient.send(
+      new DeleteCommand({
+        TableName: TODOS_TABLE_NAME,
+        Key: { pk: TODO_LIST_PK, sk: todoSortKey(id) },
+        ReturnValues: 'ALL_OLD',
+      }),
+    );
 
-    if (todoIndex === -1)
-      throw new NotFoundException(`Todo ${id} not found`);
-
-    this.todoList.list.splice(todoIndex, 1);
+    if (!result.Attributes) throw new NotFoundException(`Todo ${id} not found`);
 
     return { deleted: true };
   }
 
   /** Looks up a todo or throws when it does not exist. */
-  private findTodo(id: number): TodoItem {
-    const todo = this.todoList.list.find((item) => item.id === id);
+  private async findTodo(id: number): Promise<TodoItem> {
+    const result = await this.docClient.send(
+      new GetCommand({
+        TableName: TODOS_TABLE_NAME,
+        Key: { pk: TODO_LIST_PK, sk: todoSortKey(id) },
+      }),
+    );
 
-    if (!todo)
-      throw new NotFoundException(`Todo ${id} not found`);
+    if (!result.Item) throw new NotFoundException(`Todo ${id} not found`);
 
-    return todo;
+    return this.fromItem(result.Item);
   }
 
-  /** Replaces an existing todo at the same list position. */
-  private replaceTodo(id: number, todo: TodoItem) {
-    const todoIndex = this.todoList.list.findIndex((item) => item.id === id);
+  /**
+   * Atomically claims the next todo id via a server-side DynamoDB increment
+   * (`ADD`), so concurrent createTodo() calls can't read the same value and
+   * hand out duplicate ids the way a read-then-write would.
+   */
+  private async nextId(): Promise<number> {
+    const result = await this.docClient.send(
+      new UpdateCommand({
+        TableName: TODOS_TABLE_NAME,
+        Key: { pk: TODO_LIST_PK, sk: COUNTER_SK },
+        UpdateExpression: 'ADD currentId :incr',
+        ExpressionAttributeValues: { ':incr': 1 },
+        ReturnValues: 'UPDATED_NEW',
+      }),
+    );
 
-    if (todoIndex === -1) {
-      throw new NotFoundException(`Todo ${id} not found`);
-    }
-
-    this.todoList.list.splice(todoIndex, 1, todo);
+    return result.Attributes?.currentId as number;
   }
 
   /** Creates a todo payload from request data and optional existing state. */
   private buildTodo(
     todoDto: CreateTodoDto | UpdateTodoDto,
     existingTodo?: TodoItem,
+    newId?: number,
   ): TodoItem {
     const statusValue: TodoStatus = todoDto.status ?? existingTodo?.status ?? { status: 'todo' };
 
     const newStatus = this.buildStatus(statusValue);
 
     return {
-      id: existingTodo?.id ?? this.getNextId(),
+      id: existingTodo?.id ?? newId,
       title: todoDto.title ?? existingTodo?.title ?? '',
       description: todoDto.description ?? existingTodo?.description,
       deadline: todoDto.deadline ?? existingTodo?.deadline,
@@ -174,12 +190,40 @@ export class TodosService {
     return { status: status.status };
   }
 
-  /** Derives the next todo identifier from the current list of IDs. */
-  private getNextId(): number {
-    const highestId = this.todoList.list.reduce((maxId, todo) => {
-      return Math.max(maxId, todo.id);
-    }, 0);
+  /** Converts a TodoItem into the shape stored in DynamoDB (dates as ISO strings). */
+  private toItem(todo: TodoItem) {
+    return {
+      pk: TODO_LIST_PK,
+      sk: todoSortKey(todo.id as number),
+      id: todo.id,
+      title: todo.title,
+      description: todo.description,
+      dateCreated: todo.dateCreated.toISOString(),
+      deadline: todo.deadline?.toISOString(),
+      status:
+        todo.status.status === 'done'
+          ? { status: todo.status.status, dateFinished: todo.status.dateFinished?.toISOString() }
+          : { status: todo.status.status },
+    };
+  }
 
-    return highestId + 1;
+  /** Converts a stored DynamoDB item back into a TodoItem (ISO strings as dates). */
+  private fromItem(item: Record<string, unknown>): TodoItem {
+    const status = item.status as { status: TodoStatus['status']; dateFinished?: string };
+
+    return {
+      id: item.id as number,
+      title: item.title as string,
+      description: item.description as string | undefined,
+      dateCreated: new Date(item.dateCreated as string),
+      deadline: item.deadline ? new Date(item.deadline as string) : undefined,
+      status:
+        status.status === 'done'
+          ? {
+              status: status.status,
+              dateFinished: status.dateFinished ? new Date(status.dateFinished) : undefined,
+            }
+          : { status: status.status },
+    };
   }
 }
