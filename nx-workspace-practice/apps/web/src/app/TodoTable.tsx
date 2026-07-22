@@ -3,12 +3,9 @@
 import { useState } from 'react';
 import fetchApi from 'shared';
 import { TodoItem, TodoStatus } from 'shared';
+import type { TodoTableProps } from 'shared';
 
 const STATUS_VALUES: TodoStatus['status'][] = ['todo', 'in-progress', 'done'];
-
-interface TodoTableProps {
-  initialList: TodoItem[];
-}
 
 export default function TodoTable({ initialList }: TodoTableProps) {
   const [items, setItems] = useState<TodoItem[]>(initialList);
