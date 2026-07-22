@@ -16,17 +16,11 @@ export default async function Index() {
 
   return (
     <div className="container">
-      <h1>Welcome to web!</h1>
-      <p>Message from backend: {message.message}</p>
-      {/*
-        FIXME: Tailwind not working (using CSS for now)
-        for some reason yung "container" above is working as intended
-      */}
-      <h1 style={{
-        "fontWeight": 700,
-        "fontSize": "1.5rem",
-        "marginTop": "0.5rem",
-      }}>
+      <h1 className="text-2xl font-bold">
+        MESSAGE FROM BACKEND
+      </h1>
+      <p>{message.message}</p>
+      <h1 className="text-2xl font-bold">
         TO DO LIST ITEMS
       </h1>
       <TodoTable initialList={todoList.list} />
