@@ -21,7 +21,7 @@ import {
   TODOS_TABLE_NAME,
   TODO_LIST_PK,
   todoSortKey,
-} from '../dynamodb/dynamodb.constants';
+} from './todos.constants';
 
 @Injectable()
 export class TodosService {
