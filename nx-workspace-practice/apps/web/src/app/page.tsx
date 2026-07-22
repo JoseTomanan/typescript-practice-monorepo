@@ -17,6 +17,7 @@ export default async function Index() {
   return (
     <div className="container">
       <h1 className="text-2xl font-bold">
+        {/* TODO: make this toast; import component from shadcn */}
         MESSAGE FROM BACKEND
       </h1>
       <p>{message.message}</p>
