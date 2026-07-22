@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+// FIXME: this doesnt belong here
+// go to /presentation
 export const TodoStatusSchema = z.discriminatedUnion('status', [
   z.object({ status: z.literal('todo'), id: z.number().optional() }),
   z.object({ status: z.literal('in-progress'), id: z.number().optional() }),
