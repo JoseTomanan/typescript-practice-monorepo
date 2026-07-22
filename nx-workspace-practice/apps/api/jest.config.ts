@@ -8,7 +8,7 @@ export default {
   moduleFileExtensions: ['ts', 'js', 'html'],
   // Resolve the `shared` TS path alias (defined in tsconfig.base.json) for Jest.
   moduleNameMapper: {
-    '^shared$': '<rootDir>/../../libs/shared/src/index.ts',
+    '^shared$': '<rootDir>/../../libs/shared/index.ts',
   },
   coverageDirectory: '../../coverage/apps/api',
 };
