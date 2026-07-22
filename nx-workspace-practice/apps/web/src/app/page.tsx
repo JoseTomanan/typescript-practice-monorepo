@@ -15,10 +15,13 @@ export default async function Index() {
   const todoList = await fetchApi<TodoList>('todos');
 
   return (
-    <div className="px-4 py-2">
+    <div className="container">
       <h1>Welcome to web!</h1>
       <p>Message from backend: {message.message}</p>
-      {/* FIXME: Tailwind in this block only not working (using CSS for now) */}
+      {/*
+        FIXME: Tailwind not working (using CSS for now)
+        for some reason yung "container" above is working as intended
+      */}
       <h1 style={{
         "fontWeight": 700,
         "fontSize": "1.5rem",
