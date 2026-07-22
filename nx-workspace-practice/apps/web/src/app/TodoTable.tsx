@@ -4,9 +4,11 @@ import { useState } from 'react';
 import {
   createTodo,
   deleteTodo,
+  formatDisplayDate,
   STATUS_VALUES,
   TodoItem,
   TodoStatus,
+  toDateInputValue,
   updateTodoField,
   updateTodoStatus,
 } from 'shared';
@@ -106,11 +108,11 @@ export default function TodoTable({ initialList }: TodoTableProps) {
                 <input
                   type="date"
                   className={cellInputClasses}
-                  defaultValue={item.deadline?.toString().slice(0, 10)}
+                  defaultValue={toDateInputValue(item.deadline)}
                   onChange={(e) => patchField(item.id, { deadline: e.target.value })}
                 />
               </td>
-              <td className="px-2.5 py-1 border-b border-neutral-100 align-middle">{new Date(item.dateCreated).toLocaleDateString()}</td>
+              <td className="px-2.5 py-1 border-b border-neutral-100 align-middle">{formatDisplayDate(item.dateCreated)}</td>
               <td className="px-2.5 py-1 border-b border-neutral-100 align-middle">
                 <button
                   className="border-none bg-transparent cursor-pointer text-neutral-400 text-[13px] px-1.5 py-0.5 rounded hover:text-red-600 hover:bg-red-50"
