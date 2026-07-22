@@ -6,4 +6,6 @@ import { TodosService } from './todos.service';
   controllers: [TodosController],
   providers: [TodosService],
 })
-export class TodosModule {}
+export class TodosModule {
+  // TODO: move DynamoDB todo functionality to here
+}
