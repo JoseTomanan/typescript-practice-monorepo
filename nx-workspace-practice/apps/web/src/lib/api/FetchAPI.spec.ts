@@ -1,11 +1,21 @@
-import fetchApi from './FetchAPI';
+import { fetchApi } from './FetchAPI';
 
 describe('fetchApi', () => {
   const mockFetch = jest.fn();
+  const ORIGINAL_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   beforeEach(() => {
     mockFetch.mockReset();
     global.fetch = mockFetch as unknown as typeof fetch;
+    delete process.env.NEXT_PUBLIC_API_URL;
+  });
+
+  afterAll(() => {
+    if (ORIGINAL_API_URL === undefined) {
+      delete process.env.NEXT_PUBLIC_API_URL;
+    } else {
+      process.env.NEXT_PUBLIC_API_URL = ORIGINAL_API_URL;
+    }
   });
 
   function jsonResponse(body: unknown, ok = true, status = 200) {
@@ -16,7 +26,7 @@ describe('fetchApi', () => {
     } as Response;
   }
 
-  it('prefixes the path with the API base URL', async () => {
+  it('prefixes the path with the default API base URL when NEXT_PUBLIC_API_URL is unset', async () => {
     mockFetch.mockResolvedValue(jsonResponse({ ok: true }));
 
     await fetchApi('todos');
@@ -30,6 +40,15 @@ describe('fetchApi', () => {
     await fetchApi();
 
     expect(mockFetch).toHaveBeenCalledWith('http://localhost:3000/api/', undefined);
+  });
+
+  it('uses NEXT_PUBLIC_API_URL as the base URL when it is set', async () => {
+    process.env.NEXT_PUBLIC_API_URL = 'https://example.test/api/';
+    mockFetch.mockResolvedValue(jsonResponse({ ok: true }));
+
+    await fetchApi('todos');
+
+    expect(mockFetch).toHaveBeenCalledWith('https://example.test/api/todos', undefined);
   });
 
   it('passes request options straight through to fetch', async () => {

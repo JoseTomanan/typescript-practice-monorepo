@@ -1,6 +1,10 @@
-export default async function fetchApi<T>(url?: string, options?: RequestInit): Promise<T> {
+function getApiBaseUrl(): string {
+  return process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000/api/';
+}
+
+export async function fetchApi<T>(url?: string, options?: RequestInit): Promise<T> {
   const response = await fetch(
-    'http://localhost:3000/api/' + (url || ''),
+    getApiBaseUrl() + (url || ''),
     options
   );
 

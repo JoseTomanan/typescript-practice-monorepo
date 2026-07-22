@@ -1,18 +1,14 @@
-import { Message, TodoList } from 'shared';
-import fetchApi from 'shared';
+import type { Message, TodoList } from 'shared';
+import { getMessage } from '../lib/api/MessagesAPI';
+import { getTodos } from '../lib/api/TodoAPI';
 import TodoTable from './components/TodoTable';
 
 export const dynamic = 'force-dynamic';
 
 export default async function Index() {
-  const message: Message = await fetchApi('messages', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  });
+  const message: Message = await getMessage();
 
-  const todoList = await fetchApi<TodoList>('todos');
+  const todoList: TodoList = await getTodos();
 
   return (
     <div className="container">

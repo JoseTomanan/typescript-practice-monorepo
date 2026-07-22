@@ -9,9 +9,11 @@
   "include": [
     "jest.config.ts",
     "jest.config.cts",
-    "src/**/*.test.ts",
-    "src/**/*.spec.ts",
-    "src/**/*.d.ts",
-    "api-contracts/todos.schemas.spec.ts"
+    "domain/**/*.test.ts",
+    "domain/**/*.spec.ts",
+    "domain/**/*.d.ts",
+    "api-contracts/**/*.test.ts",
+    "api-contracts/**/*.spec.ts",
+    "api-contracts/**/*.d.ts"
   ]
 }

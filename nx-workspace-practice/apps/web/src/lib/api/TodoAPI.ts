@@ -1,5 +1,9 @@
-import fetchApi from './FetchAPI';
-import type { TodoItem, TodoStatus } from '../../domain/TodoItem';
+import { fetchApi } from './FetchAPI';
+import type { TodoItem, TodoList, TodoStatus } from 'shared';
+
+export async function getTodos(): Promise<TodoList> {
+  return fetchApi<TodoList>('todos');
+}
 
 export async function updateTodoField(
   id: number | undefined,

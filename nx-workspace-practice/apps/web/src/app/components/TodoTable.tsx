@@ -1,18 +1,18 @@
 'use client';
 
 import { useState } from 'react';
+import { STATUS_VALUES, TodoItem, TodoStatus } from 'shared';
 import {
   createTodo,
   deleteTodo,
-  formatDisplayDate,
-  STATUS_VALUES,
-  TodoItem,
-  TodoStatus,
-  toDateInputValue,
   updateTodoField,
   updateTodoStatus,
-} from 'shared';
-import type { TodoTableProps } from 'shared';
+} from '../../lib/api/TodoAPI';
+import { formatDisplayDate, toDateInputValue } from '../../lib/DateFormat';
+
+export interface TodoTableProps {
+  initialList: TodoItem[];
+}
 
 export default function TodoTable({ initialList }: TodoTableProps) {
   const [items, setItems] = useState<TodoItem[]>(initialList);
