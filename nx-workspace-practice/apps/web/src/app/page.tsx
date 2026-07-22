@@ -1,6 +1,6 @@
 import { Message, TodoList } from 'shared';
 import fetchApi from 'shared';
-import TodoTable from './TodoTable';
+import TodoTable from './components/TodoTable';
 
 export const dynamic = 'force-dynamic';
 
