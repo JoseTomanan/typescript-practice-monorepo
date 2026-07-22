@@ -1,4 +1,4 @@
-import { TodoStatusSchema } from '../../domain/TodoItem';
+import { TodoStatusSchema } from '../domain/TodoItem';
 import { CreateTodoSchema } from './CreateTodoDto';
 import { UpdateTodoSchema } from './UpdateTodoDto';
 import { UpdateTodoStatusSchema } from './UpdateTodoStatusDto';
