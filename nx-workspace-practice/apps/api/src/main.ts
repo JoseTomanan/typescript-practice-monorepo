@@ -3,6 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { createZodValidationPipe } from 'nestjs-zod';
 import { z } from 'zod';
 import { AppModule } from './app/app.module';
+import { DomainExceptionFilter } from './app/todos/presentation/filters/domain-exception.filter';
 
 function createValidationException(error: unknown) {
   const issues = error instanceof z.ZodError ? error.issues : [];
@@ -25,6 +26,7 @@ async function bootstrap() {
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
   app.useGlobalPipes(new ZodValidationPipe());
+  app.useGlobalFilters(new DomainExceptionFilter());
 
   // The web app (:3001) calls this API (:3000) from the browser, so the
   // browser blocks those cross-origin requests unless CORS is enabled here.
