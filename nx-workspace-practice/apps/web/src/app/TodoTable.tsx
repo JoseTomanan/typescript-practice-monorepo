@@ -4,14 +4,13 @@ import { useState } from 'react';
 import {
   createTodo,
   deleteTodo,
+  STATUS_VALUES,
   TodoItem,
   TodoStatus,
   updateTodoField,
   updateTodoStatus,
 } from 'shared';
 import type { TodoTableProps } from 'shared';
-
-const STATUS_VALUES: TodoStatus['status'][] = ['todo', 'in-progress', 'done'];
 
 export default function TodoTable({ initialList }: TodoTableProps) {
   const [items, setItems] = useState<TodoItem[]>(initialList);
