@@ -9,7 +9,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { CreateTodoDto, UpdateTodoDto, UpdateTodoStatusDto } from './todos.dto';
-import { TodosService } from './application/todos.service';
+import { TodosService } from '../application/todos.service';
 
 @Controller('todos')
 export class TodosController {
