@@ -17,10 +17,23 @@ export default [
           allow: ['^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$'],
           depConstraints: [
             {
-              sourceTag: '*',
-              onlyDependOnLibsWithTags: ['*'],
+              sourceTag: 'type:domain',
+              onlyDependOnLibsWithTags: [],
+            },
+            {
+              sourceTag: 'type:contracts',
+              onlyDependOnLibsWithTags: ['type:domain'],
+            },
+            {
+              sourceTag: 'type:app',
+              onlyDependOnLibsWithTags: ['type:domain', 'type:contracts'],
             },
           ],
+          // NB: the `type:domain` tag identifies the todo-domain lib; its
+          // path alias is `todo-domain` (not `domain`) to avoid colliding
+          // with Node's built-in `domain` core module, whose ambient
+          // `@types/node` declaration would otherwise shadow the path-mapped
+          // module in module resolution.
         },
       ],
     },
