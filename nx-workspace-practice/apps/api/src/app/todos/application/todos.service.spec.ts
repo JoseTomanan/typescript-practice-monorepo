@@ -1,7 +1,7 @@
 import { TodoItem } from 'todo-domain';
-import { ITodosRepository } from './application/todos.repository';
+import { ITodosRepository } from './todos.repository';
 import { TodosService } from './todos.service';
-import { TodoNotFoundError } from './exceptions/todo-not-found.error';
+import { TodoNotFoundError } from '../exceptions/todo-not-found.error';
 
 /** In-memory fake for ITodosRepository — no AWS mocking, just a Map + counter. */
 class InMemoryTodosRepository extends ITodosRepository {

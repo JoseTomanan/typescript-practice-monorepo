@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { TodoItem, TodoList, buildTodo, buildStatus } from 'todo-domain';
 import { CreateTodoDto, UpdateTodoDto, UpdateTodoStatusDto } from 'api-contracts';
-import { ITodosRepository } from './application/todos.repository';
-import { TodoNotFoundError } from './exceptions/todo-not-found.error';
+import { ITodosRepository } from './todos.repository';
+import { TodoNotFoundError } from '../exceptions/todo-not-found.error';
 
 @Injectable()
 export class TodosService {
