@@ -1,4 +1,4 @@
-import { TodoItem } from 'shared';
+import { TodoItem } from 'todo-domain';
 import { ITodosRepository } from '../application/todos.repository';
 import { TodosSeeder } from './todos.seeder';
 import { SEED_TODOS } from './seed-data';

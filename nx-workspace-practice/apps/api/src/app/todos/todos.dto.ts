@@ -1,5 +1,5 @@
 import { createZodDto } from 'nestjs-zod';
-import { CreateTodoSchema, UpdateTodoSchema, UpdateTodoStatusSchema } from 'shared';
+import { CreateTodoSchema, UpdateTodoSchema, UpdateTodoStatusSchema } from 'api-contracts';
 
 /**
  * API-layer DTO classes built from the framework-agnostic Zod schemas in

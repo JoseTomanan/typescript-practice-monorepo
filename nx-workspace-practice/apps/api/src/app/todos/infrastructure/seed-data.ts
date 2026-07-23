@@ -1,4 +1,4 @@
-import { TodoItem } from 'shared';
+import { TodoItem } from 'todo-domain';
 
 /** The same seed data TodosService used to hold in memory. */
 export const SEED_TODOS: TodoItem[] = [

@@ -1,4 +1,4 @@
-import { TodoItem } from 'shared';
+import { TodoItem } from 'todo-domain';
 import { ITodosRepository } from './application/todos.repository';
 import { TodosService } from './todos.service';
 import { TodoNotFoundError } from './exceptions/todo-not-found.error';

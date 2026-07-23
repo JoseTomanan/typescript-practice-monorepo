@@ -15,7 +15,8 @@
     "skipDefaultLibCheck": true,
     "strict": false,
     "paths": {
-      "shared": ["./libs/shared/index.ts"]
+      "todo-domain": ["./libs/todo-domain/index.ts"],
+      "api-contracts": ["./libs/api-contracts/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -1,5 +1,5 @@
 import { fetchApi } from './FetchAPI';
-import type { TodoItem, TodoList, TodoStatus } from 'shared';
+import type { TodoItem, TodoList, TodoStatus } from 'todo-domain';
 
 export async function getTodos(): Promise<TodoList> {
   return fetchApi<TodoList>('todos');

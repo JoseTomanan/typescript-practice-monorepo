@@ -9,11 +9,8 @@
   "include": [
     "jest.config.ts",
     "jest.config.cts",
-    "domain/**/*.test.ts",
-    "domain/**/*.spec.ts",
-    "domain/**/*.d.ts",
-    "api-contracts/**/*.test.ts",
-    "api-contracts/**/*.spec.ts",
-    "api-contracts/**/*.d.ts"
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "**/*.d.ts"
   ]
 }

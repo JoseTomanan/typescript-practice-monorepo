@@ -1,4 +1,4 @@
-import { TodoItem } from 'shared';
+import { TodoItem } from 'todo-domain';
 
 /**
  * Repository port. An abstract class (not a TS `interface`) so it survives to

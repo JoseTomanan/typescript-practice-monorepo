@@ -7,7 +7,7 @@ import {
   QueryCommand,
   UpdateCommand,
 } from '@aws-sdk/lib-dynamodb';
-import { TodoItem, TodoStatus } from 'shared';
+import { TodoItem, TodoStatus } from 'todo-domain';
 import { ITodosRepository } from '../../application/todos.repository';
 import { DYNAMODB_CLIENT } from '../../todos.constants';
 import { COUNTER_SK, TODOS_TABLE_NAME, TODO_LIST_PK, todoSortKey } from '../todos.keys';

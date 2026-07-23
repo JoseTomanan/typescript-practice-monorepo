@@ -1,4 +1,4 @@
-import { TodoItem } from 'shared';
+import { TodoItem } from 'todo-domain';
 import { DynamoTodosRepository, fromItem, toItem } from './dynamo-todos.repository';
 
 describe('toItem / fromItem', () => {

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { STATUS_VALUES, TodoItem, TodoStatus } from 'shared';
+import { STATUS_VALUES, TodoItem, TodoStatus } from 'todo-domain';
 import {
   createTodo,
   deleteTodo,

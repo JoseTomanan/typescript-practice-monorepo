@@ -1,8 +1,8 @@
 {
-  "name": "shared",
+  "name": "todo-domain",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/shared",
+  "sourceRoot": "libs/todo-domain",
   "projectType": "library",
-  "tags": [],
+  "tags": ["scope:shared", "type:domain"],
   "targets": {}
 }

@@ -1,13 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import {
-  TodoItem,
-  TodoList,
-  CreateTodoDto,
-  UpdateTodoDto,
-  UpdateTodoStatusDto,
-  buildTodo,
-  buildStatus,
-} from 'shared';
+import { TodoItem, TodoList, buildTodo, buildStatus } from 'todo-domain';
+import { CreateTodoDto, UpdateTodoDto, UpdateTodoStatusDto } from 'api-contracts';
 import { ITodosRepository } from './application/todos.repository';
 import { TodoNotFoundError } from './exceptions/todo-not-found.error';
 

@@ -1,4 +1,4 @@
-import type { Message, TodoList } from 'shared';
+import type { Message, TodoList } from 'todo-domain';
 import { getMessage } from '../lib/api/MessagesAPI';
 import { getTodos } from '../lib/api/TodoAPI';
 import TodoTable from './components/TodoTable';

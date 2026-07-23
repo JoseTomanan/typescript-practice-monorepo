@@ -1,6 +1,5 @@
 import { z } from 'zod';
-import { STATUS_VALUES } from '../domain/constants/TodoStatusValues';
-import type { TodoStatus } from '../domain/TodoItem';
+import { STATUS_VALUES, TodoStatus } from 'todo-domain';
 
 const [TODO, IN_PROGRESS, DONE] = STATUS_VALUES;
 
